@@ -14,7 +14,7 @@ struct ExerciseLookupTool: Tool {
         var query: String
     }
 
-    func call(arguments: Arguments) async throws -> ToolOutput {
+    func call(arguments: Arguments) async throws -> String {
         let needle = arguments.query.lowercased()
         let matches = ExerciseDatabase.all.filter { exercise in
             exercise.name.lowercased().contains(needle)
@@ -22,7 +22,7 @@ struct ExerciseLookupTool: Tool {
         }
 
         guard !matches.isEmpty else {
-            return ToolOutput("No exercises in the database matched '\(arguments.query)'.")
+            return "No exercises in the database matched '\(arguments.query)'."
         }
 
         let summary = matches.prefix(8).map { exercise in
@@ -33,6 +33,6 @@ struct ExerciseLookupTool: Tool {
             return "- \(exercise.name) (\(exercise.splitDay.rawValue)): [\(muscles)]. \(exercise.baseballNote)"
         }.joined(separator: "\n")
 
-        return ToolOutput(summary)
+        return summary
     }
 }

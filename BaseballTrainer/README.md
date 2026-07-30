@@ -85,3 +85,22 @@ separate fallback path if you want it.
 
 Adjust the wording in `ChatViewModel.systemInstructions` if you want a
 different tone, but keep the safety rules intact.
+
+## API notes (verified against Apple's current FoundationModels docs/forum)
+
+- `Tool.call(arguments:)` returns a plain `String` (or `GeneratedContent`),
+  **not** `ToolOutput` — that type was deprecated mid-beta. This scaffold
+  already reflects that.
+- `Tool` requires `Sendable`, and `UserProfileStore` (an `@Observable`
+  class) isn't. `GenerateWorkoutProgramTool` therefore stores an immutable
+  `Set<EquipmentType>` snapshot instead of a live reference. Call
+  `ChatViewModel.rebuildSession()` after the athlete changes their
+  equipment (already wired up in `ContentView` via `.onChange`) — this
+  starts a fresh transcript since a session's tools can't be swapped
+  in place.
+- `LanguageModelSession(tools:instructions:)` takes `instructions` as a
+  plain `String` directly (or a trailing closure) — no `Instructions(...)`
+  wrapper needed.
+- `session.streamResponse(to:)` yields snapshots with a `.content: String`
+  property; `session.respond(to:generating:)` returns a response with a
+  `.content` property holding the fully-generated `Generable` value.

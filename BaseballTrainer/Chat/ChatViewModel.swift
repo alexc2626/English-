@@ -22,20 +22,24 @@ final class ChatViewModel {
     init(profileStore: UserProfileStore) {
         self.profileStore = profileStore
         if ModelAvailability.isAvailable {
-            session = Self.makeSession(profileStore: profileStore)
+            rebuildSession()
             messages.append(Message(role: .assistant, text: Self.welcomeMessage))
         } else {
             errorMessage = ModelAvailability.unavailableReason
         }
     }
 
-    private static func makeSession(profileStore: UserProfileStore) -> LanguageModelSession {
+    /// (Re)creates the session with a fresh equipment snapshot for its
+    /// tools. Call this after the athlete changes their equipment
+    /// selection — note this starts a new conversation transcript, since
+    /// a session's tools can't be swapped after creation.
+    func rebuildSession() {
         let tools: [any Tool] = [
-            GenerateWorkoutProgramTool(profileStore: profileStore),
+            GenerateWorkoutProgramTool(availableEquipment: profileStore.selectedEquipment),
             GenerateThrowingProgramTool(),
             ExerciseLookupTool()
         ]
-        return LanguageModelSession(tools: tools, instructions: Instructions(systemInstructions))
+        session = LanguageModelSession(tools: tools, instructions: Self.systemInstructions)
     }
 
     private static let welcomeMessage = """

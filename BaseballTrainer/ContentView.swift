@@ -31,6 +31,9 @@ struct ContentView: View {
                 chatViewModel = ChatViewModel(profileStore: profileStore)
             }
         }
+        .onChange(of: profileStore.selectedEquipment) {
+            chatViewModel?.rebuildSession()
+        }
     }
 }
 

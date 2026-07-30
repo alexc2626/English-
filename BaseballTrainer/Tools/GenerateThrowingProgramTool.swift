@@ -14,7 +14,7 @@ struct GenerateThrowingProgramTool: Tool {
         var position: String
     }
 
-    func call(arguments: Arguments) async throws -> ToolOutput {
+    func call(arguments: Arguments) async throws -> String {
         let guidelines = """
         General arm-care-first throwing progression principles:
 
@@ -30,6 +30,6 @@ struct GenerateThrowingProgramTool: Tool {
         - Weighted-ball work should only be added under in-person supervision from a qualified coach or therapist, and is not recommended for youth or early-adolescent athletes.
         - This app does not diagnose injuries. It only sequences volume and intensity conservatively.
         """
-        return ToolOutput(guidelines)
+        return guidelines
     }
 }
