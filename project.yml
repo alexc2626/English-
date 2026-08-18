@@ -1,0 +1,68 @@
+name: Photon
+options:
+  bundleIdPrefix: com.photon
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+
+packages:
+  PhotonCore:
+    path: Packages/PhotonCore
+
+settings:
+  base:
+    SWIFT_VERSION: 5.9
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    ENABLE_HARDENED_RUNTIME: YES
+    DEAD_CODE_STRIPPING: YES
+    MTL_ENABLE_DEBUG_INFO: NO
+
+targets:
+  Photon:
+    type: application
+    platform: macOS
+    sources:
+      - path: Photon/Sources
+      - path: Photon/Resources
+        type: folder
+        buildPhase: resources
+      - path: Photon/Sources/Shaders
+        buildPhase: sources
+    dependencies:
+      - package: PhotonCore
+    info:
+      path: Photon/Resources/Info.plist
+      properties:
+        CFBundleName: Photon
+        CFBundleDisplayName: Photon
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSMinimumSystemVersion: "14.0"
+        NSHumanReadableCopyright: ""
+        LSApplicationCategoryType: public.app-category.photography
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: RAW Image
+            LSItemContentTypes: [public.camera-raw-image]
+            CFBundleTypeRole: Editor
+          - CFBundleTypeName: Image
+            LSItemContentTypes: [public.image]
+            CFBundleTypeRole: Editor
+    entitlements:
+      path: Photon/Resources/Photon.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.files.user-selected.read-write: true
+        com.apple.security.files.bookmarks.app-scope: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.photon.editor
+        # Compile Core Image kernels from Metal sources
+        MTLLINKER_FLAGS: "-cikernel"
+        MTL_COMPILER_FLAGS: "-fcikernel"
+
+  PhotonCoreTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: []
+    dependencies:
+      - package: PhotonCore
