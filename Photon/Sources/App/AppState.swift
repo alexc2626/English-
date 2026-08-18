@@ -36,6 +36,7 @@ final class AppState {
 
     var isImportDialogPresented = false
     var isSyncDialogPresented = false
+    var compositeMode: CompositeDialog.Mode?
     var importProgress: ImportService.Progress?
 
     /// The develop-module editing session for the active photo.

@@ -47,6 +47,12 @@ struct PhotonCommands: Commands {
             Divider()
             Button("Create Virtual Copy") { appState.createVirtualCopy() }
                 .keyboardShortcut("'", modifiers: [.command])
+            Divider()
+            Button("Merge to HDR…") { appState.compositeMode = .hdr }
+                .keyboardShortcut("h", modifiers: [.command, .control])
+            Button("Merge to Panorama…") { appState.compositeMode = .panorama }
+                .keyboardShortcut("m", modifiers: [.command, .control])
+            Button("Focus Stack…") { appState.compositeMode = .focusStack }
         }
         CommandMenu("Develop") {
             Button("Copy Settings") { appState.copySettings() }

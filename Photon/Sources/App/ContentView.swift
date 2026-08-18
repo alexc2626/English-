@@ -40,6 +40,9 @@ struct ContentView: View {
         .sheet(isPresented: $state.isSyncDialogPresented) {
             SyncSettingsDialog()
         }
+        .sheet(item: $state.compositeMode) { mode in
+            CompositeDialog(mode: mode)
+        }
     }
 }
 
