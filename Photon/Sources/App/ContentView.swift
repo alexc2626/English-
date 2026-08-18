@@ -43,6 +43,9 @@ struct ContentView: View {
         .sheet(item: $state.compositeMode) { mode in
             CompositeDialog(mode: mode)
         }
+        .sheet(isPresented: $state.isExportDialogPresented) {
+            ExportDialog()
+        }
     }
 }
 

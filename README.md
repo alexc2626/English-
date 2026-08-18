@@ -61,6 +61,35 @@ The image-math core builds and tests anywhere Swift runs:
 cd Packages/PhotonCore && swift test
 ```
 
+## Status
+
+All six build phases are implemented in source: catalog + import, the complete Develop
+panel set (Basic, Tone Curve with point editor, HSL/B&W, Color Grading wheels, Detail,
+Lens Corrections, Transform, Effects, Calibration, Crop, Spot Removal), History/Snapshots,
+copy/paste/sync settings, virtual copies, the full masking system (AI + geometric, with
+per-mask sliders and add/subtract/intersect), presets with XMP import/export, focus
+stacking / HDR merge / panorama via Metal compute, and batch export. The image-math core
+(`Packages/PhotonCore`) has a unit-test suite covering the tone curve, HSL remapping, mask
+blend logic, colour grading weights, edit-stack semantics, XMP round-tripping, and naming
+templates.
+
+**This codebase was authored without access to a macOS/Xcode toolchain**, so it has not yet
+been compiled — expect a shakedown pass of compiler fixes on first build (`xcodegen
+generate && xcodebuild`, plus `swift test` in `Packages/PhotonCore`). Functional gaps that
+are deliberate scaffolds rather than omissions:
+
+- Canvas direct manipulation (brush painting, crop-rect dragging, spot dragging, WB
+  eyedropper sampling, gradient handles) is panel-driven for now; the instruction model and
+  rasterisers are ready for the gesture layer to write into.
+- `Upright` auto-perspective stores its mode but the auto solver (horizon/vertical
+  detection via Vision) is not yet wired into the transform stage.
+- Export offers JPEG/TIFF-8/TIFF-16/PNG/HEIF. DNG output needs Adobe's DNG SDK and is
+  intentionally out of scope.
+- Sky selection ships with the heuristic fallback until a `SkySegmentation.mlmodelc` is
+  bundled (see Design notes).
+- Tiled rendering for >16K-pixel sources is bounded (draft/screen tiers decode downscaled;
+  full-res renders whole) — a `CIRenderDestination` tile loop is the planned refinement.
+
 ## Design notes
 
 - **Sky selection**: Vision has no public semantic sky segmentation request. Photon looks for a

@@ -31,6 +31,8 @@ struct PhotonCommands: Commands {
         CommandGroup(after: .newItem) {
             Button("Import Photos…") { appState.isImportDialogPresented = true }
                 .keyboardShortcut("i", modifiers: [.command, .shift])
+            Button("Export…") { appState.isExportDialogPresented = true }
+                .keyboardShortcut("e", modifiers: [.command, .shift])
         }
         CommandMenu("Photo") {
             Button("Toggle Flag (Pick)") { appState.setFlagOnSelection(.pick) }
