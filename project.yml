@@ -22,12 +22,13 @@ targets:
     type: application
     platform: macOS
     sources:
+      # .metal files under Sources compile into the target's default.metallib with the
+      # -fcikernel flags below; Resources (including the runtime-compiled composite
+      # kernels) copy as a folder reference.
       - path: Photon/Sources
       - path: Photon/Resources
         type: folder
         buildPhase: resources
-      - path: Photon/Sources/Shaders
-        buildPhase: sources
     dependencies:
       - package: PhotonCore
     info:
@@ -60,9 +61,5 @@ targets:
         MTLLINKER_FLAGS: "-cikernel"
         MTL_COMPILER_FLAGS: "-fcikernel"
 
-  PhotonCoreTests:
-    type: bundle.unit-test
-    platform: macOS
-    sources: []
-    dependencies:
-      - package: PhotonCore
+# PhotonCore's unit tests live in the SwiftPM package: `cd Packages/PhotonCore && swift test`.
+# They also appear in Xcode's test navigator via the package dependency.
