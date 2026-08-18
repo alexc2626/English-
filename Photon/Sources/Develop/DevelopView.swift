@@ -84,6 +84,17 @@ struct DevelopPanelStack: View {
                         .frame(height: 120)
                         .padding(.bottom, 4)
                     BasicPanel(session: session)
+                    ToneCurvePanel(session: session)
+                    HSLPanel(session: session)
+                    ColorGradingPanel(session: session)
+                    DetailPanel(session: session)
+                    LensCorrectionsPanel(session: session)
+                    TransformPanel(session: session)
+                    EffectsPanel(session: session)
+                    CalibrationPanel(session: session)
+                    CropPanel(session: session)
+                    SpotRemovalPanel(session: session)
+                    HistoryPanel(session: session)
                 }
                 .padding(.bottom, 20)
             }
