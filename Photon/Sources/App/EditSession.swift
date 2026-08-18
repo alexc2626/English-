@@ -41,12 +41,26 @@ final class EditSession {
     /// Name of the in-flight gesture (slider label) for history coalescing.
     private var activeGesture: String?
 
+    private var maskObserver: NSObjectProtocol?
+
     init(photo: PhotoRecord, stack: EditStack, catalog: CatalogDatabase) {
         self.photo = photo
         self.catalog = catalog
         self.stack = stack
         self.settings = stack.current
+        // AI mask rasters land asynchronously; re-render when they arrive.
+        maskObserver = NotificationCenter.default.addObserver(
+            forName: MaskRasterizer.maskRasterDidUpdate, object: nil, queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in self?.requestRender(draft: false) }
+        }
         requestRender(draft: false)
+    }
+
+    deinit {
+        if let maskObserver {
+            NotificationCenter.default.removeObserver(maskObserver)
+        }
     }
 
     var beforeSettings: DevelopSettings {

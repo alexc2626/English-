@@ -57,6 +57,9 @@ actor RenderEngine {
             .allowLowPower: false,
             .name: "PhotonRenderContext"
         ])
+        pipeline.maskProvider = { component, extent in
+            MaskRasterizer.shared.raster(for: component, extent: extent)
+        }
     }
 
     /// Install the mask rasteriser (wired by the masking subsystem at startup).
@@ -120,6 +123,7 @@ actor RenderEngine {
         guard let base = source.baseImage(settings: settings, scaleHint: scaleHint) else {
             return nil
         }
+        MaskRasterizer.shared.beginRender(image: base, url: url)
         var image = pipeline.build(base: base, settings: settings, isRAW: source.isRAW,
                                    overlayMaskID: overlayMaskID)
 
@@ -163,6 +167,7 @@ actor RenderEngine {
         guard let base = source.baseImage(settings: settings, scaleHint: scaleHint) else {
             return nil
         }
+        MaskRasterizer.shared.beginRender(image: base, url: url)
         return pipeline.build(base: base, settings: settings, isRAW: source.isRAW,
                               overlayMaskID: overlayMaskID)
     }
