@@ -95,6 +95,7 @@ struct DevelopPanelStack: View {
                     CropPanel(session: session)
                     SpotRemovalPanel(session: session)
                     MaskingPanel(session: session)
+                    PresetsPanel(session: session)
                     HistoryPanel(session: session)
                 }
                 .padding(.bottom, 20)
