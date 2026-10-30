@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sony α7 V</title>
+<meta name="description" content="An interactive fan showcase for the Sony α7 V full-frame hybrid camera.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000;
+  --bg-2:#0b0b0d;
+  --card:#111114;
+  --line:#26262b;
+  --text:#f5f5f7;
+  --muted:#86868b;
+  --accent:#ff8a3d;
+  --accent-2:#ff3d6e;
+  --accent-3:#7a5cff;
+  --af:#4cff7a;
+  --grad:linear-gradient(90deg,var(--accent) 0%,var(--accent-2) 50%,var(--accent-3) 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.4}
+img,svg{display:block}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1180px,100% - 32px);margin-inline:auto}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.eyebrow{font-size:clamp(15px,1.6vw,21px);font-weight:600;color:var(--accent)}
+.h1{font-size:clamp(44px,8vw,112px);font-weight:800;letter-spacing:-.045em;line-height:1}
+.h2{font-size:clamp(36px,6vw,80px);font-weight:800;letter-spacing:-.04em;line-height:1.02}
+.h3{font-size:clamp(26px,3.4vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.lead{font-size:clamp(17px,1.9vw,24px);color:var(--muted);font-weight:500;max-width:720px;line-height:1.45}
+.lead b{color:var(--text);font-weight:600}
+section{position:relative}
+.center{text-align:center}
+.center .lead{margin-inline:auto}
+
+/* progress + nav */
+#progress{position:fixed;top:0;left:0;height:2px;width:0;background:var(--grad);z-index:60}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);background:rgba(0,0,0,.6);border-bottom:1px solid rgba(255,255,255,.06)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:52px;gap:16px}
+nav .logo{font-weight:700;font-size:19px;letter-spacing:-.02em}
+nav .links{display:flex;gap:24px;font-size:13px;color:#ccc}
+nav .links a:hover{color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;background:#fff;color:#000;transition:transform .2s,background .2s}
+.btn:hover{transform:scale(1.04)}
+.btn.big{padding:16px 32px;font-size:17px}
+.btn.accent{background:var(--grad);color:#fff}
+.btn.ghost{background:transparent;color:var(--accent);padding:8px 0}
+@media (max-width:760px){nav .links{display:none}}
+
+/* hero */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:110px 0 40px;overflow:hidden}
+#hero .glow{position:absolute;inset:auto;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(255,110,60,.22),rgba(122,92,255,.12) 40%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-40%);filter:blur(20px);pointer-events:none}
+.hero-title{font-size:clamp(84px,19vw,260px);font-weight:900;letter-spacing:-.06em;line-height:.9;text-align:center;position:relative}
+.hero-title .alpha{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{margin-top:12px;font-size:clamp(20px,2.6vw,32px);font-weight:600;letter-spacing:-.02em;text-align:center}
+.hero-cam{width:min(760px,94vw);margin-top:20px;perspective:1200px;position:relative}
+.cam-tilt{transform-style:preserve-3d;transition:transform .15s ease-out;will-change:transform}
+.cam-wrap{position:relative}
+.cam-wrap .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .6s}
+.cam-wrap.has-photo .photo{opacity:1}
+.cam-wrap.has-photo .cam-svg{opacity:0}
+.cam-wrap.studio{background:radial-gradient(circle at 50% 45%,#fff,#e9e9ee);border-radius:28px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.cam-wrap.studio .photo{padding:4%}
+.cam-svg{width:100%;height:auto;filter:drop-shadow(0 40px 60px rgba(0,0,0,.8))}
+.hero-cta{display:flex;gap:24px;align-items:center;margin-top:24px;flex-wrap:wrap;justify-content:center}
+.hero-price{color:var(--muted);font-size:15px;margin-top:10px;text-align:center}
+.scroll-hint{margin-top:30px;font-size:12px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(6px);opacity:.5}}
+
+/* big statement */
+.statement{padding:22vh 0}
+.statement p{font-size:clamp(32px,5.5vw,72px);font-weight:700;letter-spacing:-.035em;line-height:1.1;max-width:1000px;margin-inline:auto;text-align:center}
+.statement .word{opacity:.12;transition:opacity .2s}
+
+/* lens dive */
+#dive{height:320vh}
+#dive .sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#dive .zoomer{position:absolute;width:min(900px,120vw);transform-origin:56.875% 61.15%}
+#dive .sensor{position:absolute;width:min(520px,78vw);aspect-ratio:3/2;border-radius:10px;opacity:0;transform:scale(.6)}
+#dive .sensor-text{position:absolute;bottom:9vh;left:0;right:0;text-align:center;opacity:0;padding:0 16px}
+#dive .dive-intro{position:absolute;top:14vh;left:0;right:0;text-align:center;padding:0 16px}
+
+/* stats */
+.stats{padding:16vh 0}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-top:60px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:34px 28px;position:relative;overflow:hidden}
+.stat .num{font-size:clamp(56px,6vw,84px);font-weight:800;letter-spacing:-.05em;line-height:1}
+.stat .unit{font-size:24px;font-weight:700;margin-left:4px}
+.stat .label{color:var(--muted);margin-top:10px;font-size:15px;font-weight:500}
+.stat::after{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .4s}
+.stat:hover::after{opacity:1}
+
+/* feature block */
+.feature{padding:14vh 0}
+.feature .head{margin-bottom:44px}
+.feature .head .h2{margin-top:10px}
+.feature .head .lead{margin-top:20px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:32px;overflow:hidden;position:relative}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:20px}
+.pill{padding:10px 18px;border-radius:999px;background:#1d1d22;font-size:14px;font-weight:600;color:#ccc;transition:all .25s;border:1px solid transparent}
+.pill:hover{color:#fff}
+.pill.on{background:#fff;color:#000}
+.hint{font-size:13px;color:var(--muted);text-align:center;padding:0 16px 20px}
+
+/* burst */
+.burst-stage{display:grid;grid-template-columns:1fr;gap:0}
+.viewfinder{position:relative;aspect-ratio:16/8;background:#050507;overflow:hidden}
+.viewfinder canvas{width:100%;height:100%}
+.vf-hud{position:absolute;inset:0;pointer-events:none;font-variant-numeric:tabular-nums;font-size:13px;font-weight:600;color:#fff}
+.vf-hud .tl{position:absolute;top:14px;left:18px;display:flex;gap:14px}
+.vf-hud .tr{position:absolute;top:14px;right:18px}
+.vf-hud .bl{position:absolute;bottom:14px;left:18px}
+.vf-hud .br{position:absolute;bottom:14px;right:18px}
+.rec{color:#ff4d4d}
+.flash{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+.burst-bar{display:flex;align-items:center;gap:20px;padding:20px;flex-wrap:wrap;justify-content:space-between;border-top:1px solid var(--line)}
+.shutter{width:76px;height:76px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#666,#1a1a1a 70%);border:4px solid #333;box-shadow:0 0 0 2px #555,0 10px 30px rgba(0,0,0,.6);position:relative;touch-action:none;user-select:none;-webkit-user-select:none;transition:transform .08s}
+.shutter::after{content:"";position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ddd,#888)}
+.shutter.down{transform:scale(.92)}
+.shutter-wrap{display:flex;align-items:center;gap:16px}
+.shutter-label{font-size:14px;color:var(--muted);max-width:180px}
+.counter{font-size:44px;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.counter small{font-size:14px;color:var(--muted);font-weight:600;letter-spacing:0;display:block}
+.toggle{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#ccc}
+.switch{width:46px;height:28px;border-radius:999px;background:#333;position:relative;transition:background .25s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .25s}
+.switch.on{background:var(--af)}
+.switch.on::after{transform:translateX(18px)}
+.strip{display:flex;gap:4px;padding:16px 20px 20px;overflow-x:auto;min-height:92px;scrollbar-width:thin}
+.frame{flex:0 0 auto;width:96px;height:56px;border-radius:6px;overflow:hidden;position:relative;border:2px solid #222;animation:pop .25s ease-out}
+.frame.pre{border-color:var(--accent)}
+.frame canvas{width:100%;height:100%}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+
+/* AF */
+.af-stage{position:relative;aspect-ratio:16/9;background:radial-gradient(ellipse at 50% 120%,#1b2a1f,#07090a 70%);overflow:hidden;cursor:crosshair;touch-action:none}
+.af-stage .grid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.18) 1px,transparent 1px);background-size:6% 10.6%;opacity:.5}
+.subject{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;pointer-events:none}
+.subject svg{width:100%;height:100%}
+.afbox{position:absolute;border:2px solid var(--af);border-radius:6px;pointer-events:none;box-shadow:0 0 18px rgba(76,255,122,.45);transition:width .3s,height .3s}
+.afbox::before,.afbox::after{content:"";position:absolute;width:12px;height:12px;border:3px solid var(--af)}
+.afbox::before{top:-4px;left:-4px;border-right:0;border-bottom:0}
+.afbox::after{bottom:-4px;right:-4px;border-left:0;border-top:0}
+.eyebox{position:absolute;border:2px solid #fff;border-radius:4px;pointer-events:none;box-shadow:0 0 10px rgba(255,255,255,.6)}
+.af-label{position:absolute;top:16px;left:18px;font-size:13px;font-weight:700;color:var(--af);letter-spacing:.04em}
+.af-points{position:absolute;bottom:16px;right:18px;font-size:13px;font-weight:600;color:#bbb;font-variant-numeric:tabular-nums}
+
+/* DR */
+.dr-stage{position:relative;aspect-ratio:16/9;overflow:hidden;user-select:none;touch-action:none;cursor:ew-resize}
+.dr-stage .scene{position:absolute;inset:0}
+.dr-stage .scene svg{width:100%;height:100%}
+.dr-stage .scene.lo{filter:contrast(2.1) brightness(1.15) saturate(.7)}
+.dr-stage .scene.hi{filter:contrast(.98) saturate(1.15) brightness(1.02)}
+.dr-handle{position:absolute;top:0;bottom:0;width:2px;background:#fff;left:50%;pointer-events:none}
+.dr-handle::after{content:"";position:absolute;top:50%;left:50%;width:44px;height:44px;border-radius:50%;transform:translate(-50%,-50%);background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.dr-handle span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;color:#000;font-weight:800;font-size:14px}
+.dr-tag{position:absolute;top:16px;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);font-size:13px;font-weight:700}
+.dr-tag.l{left:16px}
+.dr-tag.r{right:16px}
+
+/* IBIS */
+.ibis-stage{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000}
+.ibis-inner{position:absolute;inset:-6%;will-change:transform,filter}
+.ibis-inner svg{width:100%;height:100%}
+.ibis-reticle{position:absolute;top:50%;left:50%;width:60px;height:60px;margin:-30px;border:1.5px solid rgba(255,255,255,.7);border-radius:50%;pointer-events:none}
+.ibis-reticle::before,.ibis-reticle::after{content:"";position:absolute;background:rgba(255,255,255,.7)}
+.ibis-reticle::before{left:50%;top:-14px;bottom:-14px;width:1.5px}
+.ibis-reticle::after{top:50%;left:-14px;right:-14px;height:1.5px}
+.range-row{display:flex;align-items:center;gap:18px;padding:22px;flex-wrap:wrap;justify-content:center}
+.range-row label{font-weight:600;font-size:15px}
+.range-row output{font-size:30px;font-weight:800;letter-spacing:-.03em;min-width:120px;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:min(420px,80vw);height:6px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2)) 0/var(--p,50%) 100% no-repeat,#333}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.5)}
+input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:#fff;border:0}
+
+/* slow mo */
+.slomo-stage{aspect-ratio:16/8;background:#050507;position:relative}
+.slomo-stage canvas{width:100%;height:100%}
+.slomo-stage .tag{position:absolute;top:16px;left:18px;font-size:13px;font-weight:700;color:#fff;background:rgba(255,61,110,.9);padding:5px 10px;border-radius:6px}
+
+/* horizontal gallery */
+#gallery{height:300vh}
+#gallery .sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+#gallery .track{display:flex;gap:24px;padding-left:max(16px,calc((100vw - 1180px)/2));will-change:transform}
+.gcard{flex:0 0 min(420px,82vw);height:min(560px,64vh);border-radius:32px;padding:36px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;position:relative}
+.gcard .big{font-size:clamp(60px,7vw,96px);font-weight:900;letter-spacing:-.05em;line-height:.95}
+.gcard p{color:var(--muted);font-size:17px;font-weight:500;line-height:1.45}
+.gcard p b{color:#fff}
+.gcard .art{position:absolute;right:-40px;top:-40px;width:240px;height:240px;border-radius:50%;filter:blur(50px);opacity:.5}
+#gallery .gtitle{margin-bottom:40px}
+
+/* turn around */
+#turn{height:260vh}
+#turn .sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;grid-template-columns:1fr 1.4fr;align-items:center;gap:40px;width:min(1180px,100% - 32px);margin-inline:auto}
+@media (max-width:860px){#turn .sticky{grid-template-columns:1fr;align-content:center;gap:10px;text-align:center}}
+.turn-copy{position:relative;min-height:260px}
+.turn-copy .step{position:absolute;inset:0;transition:opacity .5s,transform .5s}
+.turn-copy .step.off{opacity:0;transform:translateY(20px)}
+.flipper{perspective:1800px}
+.flip-card{position:relative;aspect-ratio:800/520;transform-style:preserve-3d;will-change:transform}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip-face.back{transform:rotateY(180deg)}
+.flip-face .cam-wrap,.flip-face .cam-svg{height:100%}
+.gcard .shot{position:absolute;left:0;right:0;bottom:90px;margin:auto;width:92%;opacity:0;transition:opacity .6s;pointer-events:none}
+.gcard.has-shot .shot{opacity:1}
+.gcard.has-shot .big{opacity:.15}
+
+/* compare */
+.compare{padding:14vh 0}
+.cmp-row{display:grid;grid-template-columns:160px 1fr;gap:24px;align-items:center;padding:20px 0;border-bottom:1px solid var(--line)}
+.cmp-row .name{font-weight:600;color:#ddd}
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{height:30px;border-radius:8px;display:flex;align-items:center;padding:0 12px;font-size:13px;font-weight:700;width:0;transition:width 1.4s cubic-bezier(.2,.8,.2,1);white-space:nowrap;overflow:hidden}
+.bar.old{background:#2a2a30;color:#aaa}
+.bar.new{background:var(--grad);color:#fff}
+.cmp-legend{display:flex;gap:20px;margin-top:30px;font-size:14px;color:var(--muted);font-weight:600}
+.cmp-legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.cmp-legend .o::before{background:#2a2a30}
+.cmp-legend .n::before{background:var(--grad)}
+@media (max-width:600px){.cmp-row{grid-template-columns:1fr;gap:10px}}
+
+/* buy */
+#buy{padding:16vh 0 12vh}
+.buy-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center;margin-top:50px}
+@media (max-width:900px){.buy-grid{grid-template-columns:1fr}}
+.buy-cam{background:radial-gradient(circle at 50% 60%,#1c1c22,#0a0a0c 70%);border-radius:32px;padding:40px 20px;border:1px solid var(--line)}
+.buy-cam .cam-wrap{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.opt{display:block;width:100%;text-align:left;border:2px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:14px;transition:border-color .25s,background .25s}
+.opt.on{border-color:var(--accent);background:rgba(255,138,61,.06)}
+.opt .t{font-weight:700;font-size:18px;display:flex;justify-content:space-between;gap:10px}
+.opt .d{color:var(--muted);font-size:14px;margin-top:6px}
+.total{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 20px;padding-top:20px;border-top:1px solid var(--line)}
+.total .p{font-size:40px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.addbag{width:100%;padding:18px;border-radius:16px;font-size:17px;font-weight:700;background:var(--grad);color:#fff;position:relative;overflow:hidden;transition:transform .2s}
+.addbag:hover{transform:translateY(-2px)}
+.addbag.done{background:var(--af);color:#000}
+.small-print{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.5}
+
+footer{border-top:1px solid var(--line);padding:40px 0 60px;color:var(--muted);font-size:12px;line-height:1.6}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.2,.8,.2,1),transform 1s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+</style>
+<script>
+// Real photos replace the SVG. Opaque white-background shots get a studio card so they don't look like pasted boxes.
+function photoLoaded(img) {
+  const wrap = img.parentNode;
+  wrap.classList.add('has-photo');
+  try {
+    const c = document.createElement('canvas'); c.width = c.height = 4;
+    const x = c.getContext('2d'); x.drawImage(img, 0, 0, 4, 4);
+    const [r, g, b, a] = x.getImageData(0, 0, 1, 1).data;
+    if (a > 200 && r + g + b > 600) wrap.classList.add('studio');
+  } catch (e) {}
+}
+</script>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav>
+  <div class="wrap">
+    <a href="#hero" class="logo">α7 V</a>
+    <div class="links">
+      <a href="#dive">Sensor</a>
+      <a href="#burst">Speed</a>
+      <a href="#af">Autofocus</a>
+      <a href="#dr">Dynamic range</a>
+      <a href="#ibis">Stabilisation</a>
+      <a href="#slomo">Video</a>
+    </div>
+    <a href="#buy" class="btn">Buy</a>
+  </div>
+</nav>
+
+<!-- Reusable camera illustration. Drop real photos in images/ and they replace it automatically. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="bodyG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a3a40"/><stop offset=".12" stop-color="#232327"/><stop offset=".85" stop-color="#141416"/><stop offset="1" stop-color="#0a0a0b"/>
+    </linearGradient>
+    <linearGradient id="gripG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0c0c0d"/><stop offset=".35" stop-color="#1f1f23"/><stop offset=".7" stop-color="#18181b"/><stop offset="1" stop-color="#101012"/>
+    </linearGradient>
+    <linearGradient id="humpG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#46464c"/><stop offset=".3" stop-color="#26262a"/><stop offset="1" stop-color="#18181b"/>
+    </linearGradient>
+    <linearGradient id="metalG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2f2f2"/><stop offset=".3" stop-color="#8d8d93"/><stop offset=".55" stop-color="#e0e0e4"/><stop offset=".8" stop-color="#6f6f75"/><stop offset="1" stop-color="#cfcfd4"/>
+    </linearGradient>
+    <radialGradient id="glassG" cx=".38" cy=".32" r=".8">
+      <stop offset="0" stop-color="#6b7bff"/><stop offset=".18" stop-color="#2a1e5c"/><stop offset=".45" stop-color="#0c0b1d"/><stop offset=".75" stop-color="#05050a"/><stop offset="1" stop-color="#1c3b46"/>
+    </radialGradient>
+    <radialGradient id="glassInner" cx=".6" cy=".65" r=".6">
+      <stop offset="0" stop-color="#ff7a3d" stop-opacity=".55"/><stop offset=".5" stop-color="#b03dff" stop-opacity=".15"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="barrelG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c2c31"/><stop offset=".5" stop-color="#151518"/><stop offset="1" stop-color="#0b0b0c"/>
+    </linearGradient>
+    <pattern id="knurl" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="#141416"/><rect width="3" height="6" fill="#1c1c20"/>
+    </pattern>
+    <pattern id="knurlH" width="5" height="22" patternUnits="userSpaceOnUse">
+      <rect width="5" height="22" fill="#151517"/><rect width="2" height="22" fill="#2a2a2f"/>
+    </pattern>
+    <pattern id="leather" width="14" height="14" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="#141416"/>
+      <circle cx="4" cy="4" r="3.2" fill="#1d1d21"/><circle cx="11" cy="9" r="3.6" fill="#1b1b1f"/><circle cx="3" cy="12" r="2.4" fill="#1e1e22"/>
+    </pattern>
+    <linearGradient id="sensFront" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a4dff"/><stop offset=".35" stop-color="#3a46d8"/><stop offset=".7" stop-color="#1f6fb0"/><stop offset="1" stop-color="#11806e"/>
+    </linearGradient>
+    <linearGradient id="sensSheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/>
+    </linearGradient>
+    <linearGradient id="evfG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b2a1e"/><stop offset=".4" stop-color="#6a7a3a"/><stop offset=".7" stop-color="#2a4a5a"/><stop offset="1" stop-color="#0c0c0c"/>
+    </linearGradient>
+    <linearGradient id="screenG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26262b"/><stop offset="1" stop-color="#0b0b0d"/>
+    </linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <symbol id="camera" viewBox="0 0 800 520">
+    <ellipse cx="400" cy="496" rx="340" ry="14" fill="#000" opacity=".7" filter="url(#soft)"/>
+    <!-- strap lugs -->
+    <path d="M70 168 Q46 168 46 182 Q46 196 70 196" fill="none" stroke="url(#metalG)" stroke-width="6"/>
+    <path d="M730 168 Q754 168 754 182 Q754 196 730 196" fill="none" stroke="url(#metalG)" stroke-width="6"/>
+    <!-- top controls -->
+    <rect x="98" y="138" width="150" height="20" rx="6" fill="#1a1a1d"/>
+    <ellipse cx="172" cy="136" rx="36" ry="10" fill="#2a2a2f"/>
+    <ellipse cx="172" cy="131" rx="26" ry="7" fill="url(#metalG)" opacity=".55"/>
+    <ellipse cx="172" cy="128" rx="18" ry="5" fill="#1d1d21"/>
+    <rect x="252" y="110" width="96" height="40" rx="5" fill="url(#knurl)" stroke="#2c2c31"/>
+    <rect x="252" y="106" width="96" height="8" rx="4" fill="#3a3a40"/>
+    <rect x="318" y="134" width="30" height="22" rx="3" fill="#1c1c20" stroke="#36363c"/>
+    <!-- main body -->
+    <rect x="70" y="150" width="660" height="320" rx="30" fill="url(#bodyG)" stroke="#2f2f35"/>
+    <rect x="76" y="154" width="648" height="5" rx="2.5" fill="#4a4a52" opacity=".5"/>
+    <!-- grip (viewer's left) -->
+    <path d="M70 196 Q70 156 108 154 L236 154 Q258 156 262 186 L268 430 Q266 468 232 470 L104 470 Q72 468 70 432 Z" fill="url(#gripG)"/>
+    <path d="M84 230 Q88 206 112 204 L234 204 Q250 206 252 228 L256 430 Q254 456 230 458 L110 458 Q86 456 84 432 Z" fill="url(#leather)"/>
+    <rect x="104" y="166" width="140" height="22" rx="10" fill="url(#knurlH)" stroke="#2c2c31"/>
+    <circle cx="294" cy="196" r="9" fill="#1c1c20" stroke="#3a3a40"/>
+    <circle cx="294" cy="196" r="4" fill="#555"/>
+    <!-- EVF hump -->
+    <path d="M352 156 L374 84 L536 84 L558 156 L558 214 L352 214 Z" fill="url(#humpG)" stroke="#36363c"/>
+    <rect x="378" y="70" width="154" height="16" rx="3" fill="#1f1f23" stroke="#3a3a40"/>
+    <text x="455" y="140" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="32" letter-spacing="2" fill="#ececf0">SONY</text>
+    <!-- model badge -->
+    <text x="650" y="236" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700" font-size="44" fill="#e9e9ee">α</text>
+    <text x="650" y="272" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-weight="500" font-size="26" fill="#e9e9ee">7</text>
+    <!-- E-mount -->
+    <circle cx="455" cy="318" r="156" fill="#0b0b0c"/>
+    <circle cx="455" cy="318" r="151" fill="none" stroke="#f07a2a" stroke-width="7"/>
+    <circle cx="455" cy="318" r="146" fill="none" stroke="#a94e14" stroke-width="2"/>
+    <circle cx="455" cy="318" r="125" fill="none" stroke="url(#metalG)" stroke-width="40"/>
+    <circle cx="455" cy="318" r="105" fill="#09090b"/>
+    <g fill="url(#metalG)" stroke="#555" stroke-width="1">
+      <circle cx="380" cy="232" r="7"/><circle cx="551" cy="246" r="7"/><circle cx="572" cy="352" r="7"/><circle cx="383" cy="424" r="7"/><circle cx="540" cy="414" r="7"/>
+    </g>
+    <circle cx="525" cy="224" r="6" fill="#f2f2f2"/>
+    <text x="455" y="214" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-weight="600" font-size="14" fill="#555">E-mount</text>
+    <!-- sensor -->
+    <rect x="371" y="262" width="168" height="112" rx="3" fill="#202024"/>
+    <rect x="375" y="266" width="160" height="104" rx="2" fill="url(#sensFront)"/>
+    <rect x="375" y="266" width="160" height="104" rx="2" fill="url(#sensSheen)"/>
+    <path d="M395 392 Q455 408 515 392" fill="none" stroke="#d9a441" stroke-width="3" stroke-dasharray="2 9"/>
+    <path d="M328 390 Q318 420 344 440 L366 426 Q350 410 352 388 Z" fill="#141416" stroke="#2c2c31"/>
+    <path d="M300 460 L720 460" stroke="#000" stroke-width="2" opacity=".5"/>
+  </symbol>
+  <symbol id="cameraBack" viewBox="0 0 800 520">
+    <ellipse cx="400" cy="496" rx="340" ry="14" fill="#000" opacity=".7" filter="url(#soft)"/>
+    <path d="M70 168 Q46 168 46 182 Q46 196 70 196" fill="none" stroke="url(#metalG)" stroke-width="6"/>
+    <path d="M730 168 Q754 168 754 182 Q754 196 730 196" fill="none" stroke="url(#metalG)" stroke-width="6"/>
+    <rect x="448" y="96" width="110" height="46" rx="5" fill="url(#knurl)" stroke="#2c2c31"/>
+    <rect x="560" y="118" width="70" height="30" rx="5" fill="url(#knurl)" stroke="#2c2c31"/>
+    <rect x="636" y="112" width="80" height="36" rx="5" fill="url(#knurl)" stroke="#2c2c31"/>
+    <rect x="70" y="150" width="660" height="320" rx="26" fill="url(#bodyG)" stroke="#2f2f35"/>
+    <path d="M600 190 Q600 170 626 170 L690 170 Q722 172 724 210 L724 430 Q722 462 690 464 L630 464 Q602 462 600 436 Z" fill="url(#leather)"/>
+    <!-- eyecup -->
+    <rect x="226" y="46" width="176" height="176" rx="34" fill="#121214" stroke="#2c2c31" stroke-width="2"/>
+    <rect x="250" y="66" width="128" height="112" rx="16" fill="#060607"/>
+    <rect x="274" y="84" width="80" height="70" rx="4" fill="url(#evfG)"/>
+    <rect x="280" y="190" width="68" height="18" rx="4" fill="#1d1d21"/>
+    <!-- screen -->
+    <rect x="104" y="216" width="440" height="242" rx="10" fill="#0d0d0f" stroke="#2c2c31" stroke-width="2"/>
+    <rect x="118" y="228" width="412" height="218" rx="4" fill="url(#screenG)"/>
+    <path d="M118 228 L330 228 L230 446 L118 446 Z" fill="#fff" opacity=".035"/>
+    <!-- buttons -->
+    <g font-family="Inter,Arial,sans-serif" font-weight="700" fill="#e9e9ee" text-anchor="middle">
+      <circle cx="140" cy="186" r="20" fill="#1c1c20" stroke="#36363c"/><text x="140" y="192" font-size="15">C3</text>
+      <rect x="170" y="170" width="70" height="32" rx="16" fill="#1c1c20" stroke="#36363c"/><text x="205" y="191" font-size="13">MENU</text>
+      <circle cx="450" cy="186" r="20" fill="#1c1c20" stroke="#36363c"/><text x="450" y="192" font-size="15">C1</text>
+      <circle cx="520" cy="190" r="26" fill="#1c1c20" stroke="#36363c"/><text x="520" y="195" font-size="13">AF-ON</text>
+      <circle cx="680" cy="190" r="22" fill="#1c1c20" stroke="#36363c"/><text x="680" y="195" font-size="14">AEL</text>
+      <circle cx="560" cy="256" r="24" fill="url(#knurl)" stroke="#36363c"/>
+      <circle cx="555" cy="318" r="18" fill="#1c1c20" stroke="#36363c"/><text x="555" y="323" font-size="14">Fn</text>
+      <text x="572" y="352" font-size="11">DISP</text>
+      <circle cx="572" cy="398" r="44" fill="url(#knurl)" stroke="#36363c"/>
+      <circle cx="572" cy="398" r="18" fill="#1a1a1d" stroke="#3a3a40"/>
+      <circle cx="548" cy="452" r="14" fill="#1c1c20" stroke="#36363c"/><path d="M542 446 L556 452 L542 458Z" fill="#e9e9ee"/>
+      <circle cx="600" cy="452" r="14" fill="#1c1c20" stroke="#36363c"/>
+    </g>
+  </symbol>
+</svg>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="glow"></div>
+  <p class="eyebrow reveal">Full-frame hybrid camera</p>
+  <h1 class="hero-title reveal"><span class="alpha">α</span>7 V</h1>
+  <p class="hero-sub reveal">Faster than it has any right to be.</p>
+  <div class="hero-cam reveal" id="heroCam">
+    <div class="cam-tilt" id="camTilt">
+      <div class="cam-wrap">
+        <svg class="cam-svg" viewBox="0 0 800 520"><use href="#camera"/></svg>
+        <img class="photo" src="images/a7v-front.png" alt="Sony α7 V camera, front view" onload="photoLoaded(this)" onerror="this.remove()">
+      </div>
+    </div>
+  </div>
+  <div class="hero-cta reveal">
+    <a href="#buy" class="btn big accent">Buy now</a>
+    <a href="#dive" class="btn ghost big">Take the tour ›</a>
+  </div>
+  <p class="hero-price reveal">From US$2,898 body only</p>
+  <p class="scroll-hint">Scroll</p>
+</section>
+
+<!-- STATEMENT -->
+<section class="statement">
+  <p id="statement">The basic model was never meant to be this good. Thirty frames a second. Sixteen stops. An AI that knows where your subject's eye is before you do.</p>
+</section>
+
+<!-- LENS DIVE -->
+<section id="dive">
+  <div class="sticky">
+    <div class="dive-intro"><p class="eyebrow">Look through the mount</p><p class="h2" style="margin-top:8px">Keep scrolling.</p></div>
+    <div class="zoomer" id="zoomer">
+      <div class="cam-wrap">
+        <svg class="cam-svg" viewBox="0 0 800 520"><use href="#camera"/></svg>
+      </div>
+    </div>
+    <svg class="sensor" id="sensor" viewBox="0 0 360 240" aria-label="Image sensor">
+      <defs>
+        <linearGradient id="sensG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7a4dff"/><stop offset=".35" stop-color="#3a46d8"/><stop offset=".7" stop-color="#1f6fb0"/><stop offset="1" stop-color="#11806e"/>
+        </linearGradient>
+        <pattern id="pix" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="none" stroke="rgba(255,255,255,.08)" stroke-width=".6"/></pattern>
+        <linearGradient id="shine" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      </defs>
+      <rect x="0" y="0" width="360" height="240" rx="8" fill="#141418" stroke="#55555c"/>
+      <rect x="14" y="14" width="332" height="212" rx="3" fill="url(#sensG)"/>
+      <rect x="14" y="14" width="332" height="212" rx="3" fill="url(#pix)"/>
+      <rect id="shineBar" x="-120" y="14" width="80" height="212" fill="url(#shine)" transform="skewX(-20)"/>
+    </svg>
+    <div class="sensor-text" id="sensorText">
+      <p class="eyebrow">33MP partially stacked Exmor RS</p>
+      <p class="h3" style="margin-top:8px">A sensor that reads out <span class="grad-text">ridiculously fast.</span></p>
+      <p class="lead" style="margin:14px auto 0">Paired with the new BIONZ XR2 and a dedicated AI processing unit, it reads out fast enough for blackout-free bursts and far less rolling-shutter wobble.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="wrap center">
+    <p class="eyebrow reveal">By the numbers</p>
+    <h2 class="h2 reveal" style="margin-top:10px">Numbers that sound <span class="grad-text">made up.</span></h2>
+    <div class="stat-grid">
+      <div class="stat reveal"><div><span class="num" data-count="33">0</span><span class="unit">MP</span></div><p class="label">Full-frame resolution</p></div>
+      <div class="stat reveal"><div><span class="num" data-count="30">0</span><span class="unit">fps</span></div><p class="label">Blackout-free RAW bursts with AF</p></div>
+      <div class="stat reveal"><div><span class="num" data-count="16">0</span><span class="unit">stops</span></div><p class="label">Dynamic range in stills</p></div>
+      <div class="stat reveal"><div><span class="num" data-count="7.5" data-dec="1">0</span><span class="unit">stops</span></div><p class="label">In-body stabilisation</p></div>
+      <div class="stat reveal"><div><span class="num" data-count="759">0</span></div><p class="label">Phase-detect AF points</p></div>
+      <div class="stat reveal"><div><span class="num" data-count="120">0</span><span class="unit">p</span></div><p class="label">4K slow motion</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- BURST -->
+<section class="feature" id="burst">
+  <div class="wrap">
+    <div class="head center">
+      <p class="eyebrow reveal">30 fps · Pre-Capture</p>
+      <h2 class="h2 reveal">Never miss <span class="grad-text">the moment.</span><br>Even the one before it.</h2>
+      <p class="lead reveal">Hold the shutter and fire <b>30 RAW frames a second</b> with the viewfinder never going dark. Turn on <b>Pre-Capture</b> and the camera keeps up to a second of frames from <b>before you pressed it</b>.</p>
+    </div>
+    <div class="panel reveal">
+      <div class="burst-stage">
+        <div class="viewfinder">
+          <canvas id="vfCanvas" width="1200" height="600"></canvas>
+          <div class="flash" id="flash"></div>
+          <div class="vf-hud">
+            <div class="tl"><span>RAW</span><span>H+</span><span id="hudFps">30fps</span></div>
+            <div class="tr" id="hudBattery">▮▮▮▮ 100%</div>
+            <div class="bl">1/4000 &nbsp; F2.8 &nbsp; ISO 400</div>
+            <div class="br" id="hudShots">999</div>
+          </div>
+        </div>
+        <div class="burst-bar">
+          <div class="shutter-wrap">
+            <button class="shutter" id="shutter" aria-label="Hold to shoot"></button>
+            <p class="shutter-label">Press and <b style="color:#fff">hold</b> the shutter (or hold the space bar)</p>
+          </div>
+          <div class="toggle"><button class="switch" id="preToggle" aria-label="Toggle Pre-Capture"></button>Pre-Capture</div>
+          <div class="counter"><span id="burstCount">0</span><small>frames captured</small></div>
+        </div>
+        <div class="strip" id="strip"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AF -->
+<section class="feature" id="af">
+  <div class="wrap">
+    <div class="head center">
+      <p class="eyebrow reveal">AI Real-time Recognition AF</p>
+      <h2 class="h2 reveal">It finds the eye.<br><span class="grad-text">Then it never lets go.</span></h2>
+      <p class="lead reveal">A dedicated AI unit recognises people, animals, birds, insects, cars, trains and planes, then locks onto the eye. <b>759 phase-detect points</b> cover 94% of the frame. Move your cursor or finger inside the frame and try to lose it.</p>
+    </div>
+    <div class="panel reveal">
+      <div class="af-stage" id="afStage">
+        <div class="grid"></div>
+        <div class="subject" id="subject"></div>
+        <div class="afbox" id="afbox"></div>
+        <div class="eyebox" id="eyebox"></div>
+        <div class="af-label" id="afLabel">● TRACKING · HUMAN EYE</div>
+        <div class="af-points" id="afPoints">AF 759 pts · 94%</div>
+      </div>
+      <div class="controls" id="afModes">
+        <button class="pill on" data-mode="human">Human</button>
+        <button class="pill" data-mode="animal">Animal</button>
+        <button class="pill" data-mode="bird">Bird</button>
+        <button class="pill" data-mode="car">Car / Train</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DR -->
+<section class="feature" id="dr">
+  <div class="wrap">
+    <div class="head center">
+      <p class="eyebrow reveal">16 stops of dynamic range</p>
+      <h2 class="h2 reveal">Bright sun. Deep shadow.<br><span class="grad-text">Both perfectly kept.</span></h2>
+      <p class="lead reveal">Drag across the frame. On the left, a typical sensor crushes the shadows and blows out the sky. On the right, the α7 V's <b>16 stops</b> hold on to all of it.</p>
+    </div>
+    <div class="panel reveal">
+      <div class="dr-stage" id="drStage">
+        <div class="scene lo" id="drLo"></div>
+        <div class="scene hi" id="drHi"></div>
+        <div class="dr-handle" id="drHandle"><span>⟷</span></div>
+        <div class="dr-tag l">Typical sensor</div>
+        <div class="dr-tag r grad-text" style="-webkit-text-fill-color:initial;color:#fff">α7 V · 16 stops</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IBIS -->
+<section class="feature" id="ibis">
+  <div class="wrap">
+    <div class="head center">
+      <p class="eyebrow reveal">7.5-stop in-body stabilisation</p>
+      <h2 class="h2 reveal">Shaky hands.<br><span class="grad-text">Still images.</span></h2>
+      <p class="lead reveal">Up from 5.5 stops on the α7 IV. Hand-hold slow shutter speeds at night and walk with your video without a gimbal. Slide to switch it on.</p>
+    </div>
+    <div class="panel reveal">
+      <div class="ibis-stage">
+        <div class="ibis-inner" id="ibisInner"></div>
+        <div class="ibis-reticle"></div>
+      </div>
+      <div class="range-row">
+        <label for="ibisRange">Stabilisation</label>
+        <input type="range" id="ibisRange" min="0" max="7.5" step="0.1" value="0">
+        <output id="ibisOut">OFF</output>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLOW MO -->
+<section class="feature" id="slomo">
+  <div class="wrap">
+    <div class="head center">
+      <p class="eyebrow reveal">4K 120p · 4K 60p full frame</p>
+      <h2 class="h2 reveal">Slow it down.<br><span class="grad-text">Keep it smooth.</span></h2>
+      <p class="lead reveal">Shoot 4K at <b>60p using the full sensor width</b>, or <b>120p in APS-C mode</b> for buttery slow motion. Both clips below play at quarter speed. Pick a frame rate and watch the difference.</p>
+    </div>
+    <div class="panel reveal">
+      <div class="slomo-stage">
+        <canvas id="slomoCanvas" width="1200" height="600"></canvas>
+        <div class="tag" id="slomoTag">120p → 25% speed</div>
+      </div>
+      <div class="controls" id="fpsModes">
+        <button class="pill" data-fps="30">30p</button>
+        <button class="pill" data-fps="60">60p</button>
+        <button class="pill on" data-fps="120">120p</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TURN AROUND -->
+<section id="turn">
+  <div class="sticky">
+    <div class="turn-copy">
+      <div class="step" data-step="0">
+        <p class="eyebrow">Design</p>
+        <h2 class="h2" style="margin-top:8px">Built around <span class="grad-text">the sensor.</span></h2>
+        <p class="lead" style="margin-top:16px">A deep, textured grip, the classic orange-ringed E-mount, and a body sealed against dust and moisture.</p>
+      </div>
+      <div class="step off" data-step="1">
+        <p class="eyebrow">Controls</p>
+        <h2 class="h2" style="margin-top:8px">Everything <span class="grad-text">under your thumb.</span></h2>
+        <p class="lead" style="margin-top:16px">Dedicated AF-ON, a joystick, four custom buttons and a big control wheel. Change settings without ever leaving the viewfinder.</p>
+      </div>
+    </div>
+    <div class="flipper">
+      <div class="flip-card" id="flipCard">
+        <div class="flip-face front">
+          <div class="cam-wrap">
+            <svg class="cam-svg" viewBox="0 0 800 520"><use href="#camera"/></svg>
+            <img class="photo" src="images/a7v-front.png" alt="Sony α7 V front" onload="photoLoaded(this)" onerror="this.remove()">
+          </div>
+        </div>
+        <div class="flip-face back">
+          <div class="cam-wrap">
+            <svg class="cam-svg" viewBox="0 0 800 520"><use href="#cameraBack"/></svg>
+            <img class="photo" src="images/a7v-back.png" alt="Sony α7 V back" onload="photoLoaded(this)" onerror="this.remove()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="sticky">
+    <div class="wrap gtitle"><p class="eyebrow">Built for long days</p><h2 class="h2" style="margin-top:8px">Everything else, <span class="grad-text">upgraded.</span></h2></div>
+    <div class="track" id="track">
+      <div class="gcard"><div class="art" style="background:var(--accent)"></div><p class="eyebrow">Viewfinder</p><div class="big">120<span style="font-size:.4em">fps</span></div><p><b>3.69 million-dot EVF</b> refreshing up to 120fps, so fast action looks like real life.</p></div>
+      <div class="gcard"><div class="art" style="background:var(--accent-2)"></div><img class="shot" src="images/a7v-screen.png" alt="α7 V with the screen flipped out" onload="this.parentNode.classList.add('has-shot')" onerror="this.remove()"><p class="eyebrow">Screen</p><div class="big">3.2″</div><p><b>Multi-angle touchscreen</b> that flips out and tilts, ready for vlogging, low angles and overhead shots.</p></div>
+      <div class="gcard"><div class="art" style="background:var(--accent-3)"></div><p class="eyebrow">Battery</p><div class="big">750</div><p>Shots per charge on the screen <b>(630 with the EVF)</b> from the NP-FZ100. Shoot all day.</p></div>
+      <div class="gcard"><div class="art" style="background:#2fd5ff"></div><p class="eyebrow">Brain</p><div class="big">XR2</div><p>The <b>BIONZ XR2</b> engine with built-in AI processing powers recognition AF and auto white balance.</p></div>
+      <div class="gcard"><div class="art" style="background:#4cff7a"></div><p class="eyebrow">Weight</p><div class="big">695<span style="font-size:.4em">g</span></div><p>With battery and card. <b>Full-frame power</b> in a body you will actually take everywhere.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section class="compare">
+  <div class="wrap">
+    <p class="eyebrow reveal">Upgrading?</p>
+    <h2 class="h2 reveal" style="margin-top:10px">α7 IV vs <span class="grad-text">α7 V.</span></h2>
+    <div id="cmp" style="margin-top:40px">
+      <div class="cmp-row reveal"><div class="name">Burst speed</div><div class="bars"><div class="bar old" data-w="33">10 fps</div><div class="bar new" data-w="100">30 fps</div></div></div>
+      <div class="cmp-row reveal"><div class="name">Stabilisation</div><div class="bars"><div class="bar old" data-w="73">5.5 stops</div><div class="bar new" data-w="100">7.5 stops</div></div></div>
+      <div class="cmp-row reveal"><div class="name">Dynamic range</div><div class="bars"><div class="bar old" data-w="88">15 stops</div><div class="bar new" data-w="100">16+ stops</div></div></div>
+      <div class="cmp-row reveal"><div class="name">Top 4K frame rate</div><div class="bars"><div class="bar old" data-w="50">60p</div><div class="bar new" data-w="100">120p</div></div></div>
+      <div class="cmp-row reveal"><div class="name">Battery (screen)</div><div class="bars"><div class="bar old" data-w="77">580 shots</div><div class="bar new" data-w="100">750 shots</div></div></div>
+    </div>
+    <div class="cmp-legend"><span class="o">α7 IV</span><span class="n">α7 V</span></div>
+  </div>
+</section>
+
+<!-- BUY -->
+<section id="buy">
+  <div class="wrap">
+    <div class="center">
+      <p class="eyebrow reveal">Your next camera</p>
+      <h2 class="h1 reveal" style="margin-top:10px">Make it <span class="grad-text">yours.</span></h2>
+    </div>
+    <div class="buy-grid">
+      <div class="buy-cam reveal">
+        <div class="cam-wrap" id="buyCam">
+          <svg class="cam-svg" viewBox="0 0 800 520"><use href="#camera"/></svg>
+          <img class="photo" src="images/a7v-front.png" alt="Sony α7 V" onload="photoLoaded(this)" onerror="this.remove()">
+        </div>
+      </div>
+      <div class="reveal">
+        <button class="opt on" data-price="2898" data-name="Body only">
+          <div class="t"><span>α7 V body</span><span>US$2,898</span></div>
+          <div class="d">For when you already own E-mount glass.</div>
+        </button>
+        <button class="opt" data-price="3099" data-name="Kit">
+          <div class="t"><span>α7 V + FE 28-70mm OSS II</span><span>US$3,099</span></div>
+          <div class="d">Everything you need to start shooting today.</div>
+        </button>
+        <div class="total"><span style="color:var(--muted);font-weight:600">Total</span><span class="p" id="total">US$2,898</span></div>
+        <button class="addbag" id="addbag">Add to Bag</button>
+        <p class="small-print">Launch prices in US dollars (announced 2 December 2025). Prices in Australia and other regions differ, so check Sony or your local retailer for current pricing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Fan-made showcase, not affiliated with or endorsed by Sony. Sony, α and BIONZ XR are trademarks of Sony Group Corporation. Specifications come from Sony's announcement and launch reviews and may vary by region. Camera illustration drawn in SVG; add official product shots as <code>images/a7v-front.png</code>, <code>images/a7v-back.png</code> and <code>images/a7v-screen.png</code> to replace it.</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(() => {
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (window.Lenis && !reduce) {
+  const lenis = new Lenis({ lerp: .09 });
+  const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+  requestAnimationFrame(raf);
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); lenis.scrollTo(a.getAttribute('href')); }));
+}
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => 1 - Math.pow(1 - t, 3);
+
+/* reveal + counters + compare bars */
+const io = new IntersectionObserver(entries => {
+  for (const e of entries) {
+    if (!e.isIntersecting) continue;
+    e.target.classList.add('in');
+    $$('.num', e.target).forEach(countUp);
+    $$('.bar', e.target).forEach(b => b.style.width = b.dataset.w + '%');
+    io.unobserve(e.target);
+  }
+}, { threshold: .2 });
+$$('.reveal').forEach((el, i) => { el.style.transitionDelay = (el.closest('#hero') ? i * 0.12 : 0) + 's'; io.observe(el); });
+
+function countUp(el) {
+  const to = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), dur = 1600, t0 = performance.now();
+  const step = now => {
+    const t = clamp((now - t0) / dur, 0, 1);
+    el.textContent = (to * ease(t)).toFixed(dec);
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* hero tilt */
+const tilt = $('#camTilt');
+addEventListener('pointermove', e => {
+  if (reduce || scrollY > innerHeight) return;
+  const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5;
+  tilt.style.transform = `rotateY(${x * 18}deg) rotateX(${-y * 12}deg)`;
+});
+
+/* statement word-by-word highlight */
+const st = $('#statement');
+st.innerHTML = st.textContent.split(' ').map(w => `<span class="word">${w}</span>`).join(' ');
+const words = $$('.word', st);
+
+/* scroll-driven scenes */
+const zoomer = $('#zoomer'), sensor = $('#sensor'), sensorText = $('#sensorText'), diveIntro = $('.dive-intro'), shine = $('#shineBar');
+const turn = $('#turn'), flipCard = $('#flipCard'), steps = $$('#turn .step');
+const dive = $('#dive'), gallery = $('#gallery'), track = $('#track'), heroCam = $('#heroCam'), progress = $('#progress');
+function sectionProgress(el) {
+  const r = el.getBoundingClientRect();
+  return clamp(-r.top / (r.height - innerHeight), 0, 1);
+}
+function onScroll() {
+  const y = scrollY;
+  progress.style.width = (y / (document.documentElement.scrollHeight - innerHeight) * 100) + '%';
+
+  // hero camera drifts up and shrinks as you leave
+  const hp = clamp(y / innerHeight, 0, 1);
+  heroCam.style.transform = `translateY(${hp * -80}px) scale(${1 - hp * .15})`;
+  heroCam.style.opacity = 1 - hp * .9;
+
+  // statement
+  const sr = st.getBoundingClientRect();
+  const sp = clamp((innerHeight * .85 - sr.top) / (sr.height + innerHeight * .4), 0, 1);
+  const lit = Math.floor(sp * words.length * 1.15);
+  words.forEach((w, i) => w.style.opacity = i < lit ? 1 : .12);
+
+  // lens dive: zoom into the glass, then reveal the sensor
+  const dp = sectionProgress(dive);
+  const z = ease(clamp(dp / .55, 0, 1));
+  zoomer.style.transform = `scale(${1 + z * 9})`;
+  zoomer.style.opacity = 1 - clamp((dp - .42) / .12, 0, 1);
+  diveIntro.style.opacity = 1 - clamp(dp / .15, 0, 1);
+  const sp2 = ease(clamp((dp - .45) / .25, 0, 1));
+  const tp = clamp((dp - .62) / .18, 0, 1);
+
+  sensor.style.opacity = sp2;
+  sensor.style.transform = `translateY(${-tp * 14}vh) scale(${.6 + sp2 * .4 - tp * .15}) rotateX(${(1 - sp2) * 40}deg)`;
+  shine.setAttribute('x', -120 + clamp((dp - .6) / .3, 0, 1) * 600);
+  sensorText.style.opacity = tp;
+  sensorText.style.transform = `translateY(${(1 - tp) * 30}px)`;
+
+  // turn the camera around
+  const fp = sectionProgress(turn);
+  const rot = ease(clamp((fp - .15) / .6, 0, 1)) * 180;
+  flipCard.style.transform = `rotateY(${rot}deg) rotateX(${Math.sin(rot / 180 * Math.PI) * 8}deg) scale(${1 - Math.sin(rot / 180 * Math.PI) * .12})`;
+  steps.forEach(el => el.classList.toggle('off', +el.dataset.step !== (rot > 90 ? 1 : 0)));
+
+  // horizontal gallery
+  const gp = sectionProgress(gallery);
+  const max = track.scrollWidth - innerWidth + Math.max(16, (innerWidth - 1180) / 2);
+  track.style.transform = `translateX(${-gp * Math.max(0, max)}px)`;
+}
+addEventListener('scroll', onScroll, { passive: true });
+addEventListener('resize', onScroll);
+onScroll();
+
+/* shared scene art */
+function landscapeSVG(id) {
+  return `<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="sky${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b2a6b"/><stop offset=".45" stop-color="#d7608a"/><stop offset=".7" stop-color="#ffb35c"/><stop offset="1" stop-color="#ffe2a8"/></linearGradient>
+      <radialGradient id="sun${id}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fffbe8"/><stop offset=".4" stop-color="#ffe9a8"/><stop offset="1" stop-color="#ffb35c" stop-opacity="0"/></radialGradient>
+      <linearGradient id="m1${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b3d6e"/><stop offset="1" stop-color="#3a2347"/></linearGradient>
+      <linearGradient id="m2${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2a4a"/><stop offset="1" stop-color="#1d1729"/></linearGradient>
+      <linearGradient id="m3${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f1a28"/><stop offset="1" stop-color="#0c0a10"/></linearGradient>
+    </defs>
+    <rect width="1600" height="900" fill="url(#sky${id})"/>
+    <g fill="#fff" opacity=".35"><ellipse cx="300" cy="200" rx="160" ry="18"/><ellipse cx="420" cy="230" rx="120" ry="12"/><ellipse cx="1200" cy="160" rx="200" ry="20"/><ellipse cx="1320" cy="195" rx="110" ry="10"/></g>
+    <circle cx="1050" cy="520" r="260" fill="url(#sun${id})"/>
+    <circle cx="1050" cy="520" r="70" fill="#fffdf2"/>
+    <path d="M0 560 L180 430 L300 500 L460 380 L620 480 L760 400 L920 520 L1100 420 L1280 500 L1440 410 L1600 480 L1600 900 L0 900Z" fill="url(#m1${id})"/>
+    <path d="M460 380 L500 420 L470 440 L530 470 L620 480Z M1100 420 L1140 460 L1110 470 L1180 490 L1280 500Z" fill="#8a5a86" opacity=".6"/>
+    <path d="M0 640 L220 540 L380 610 L560 520 L760 620 L980 540 L1180 630 L1400 550 L1600 620 L1600 900 L0 900Z" fill="url(#m2${id})"/>
+    <path d="M560 520 L600 560 L580 575 L650 590 L760 620Z M1400 550 L1430 580 L1460 600 L1600 620Z" fill="#4e3e63" opacity=".7"/>
+    <path d="M0 740 L300 680 L600 730 L900 670 L1200 740 L1600 690 L1600 900 L0 900Z" fill="url(#m3${id})"/>
+    <g fill="#2b2338">
+      ${Array.from({length: 26}, (_, i) => { const x = 40 + i * 62, h = 60 + (i * 37 % 50); return `<path d="M${x} ${760 - h} L${x - 18} 780 L${x + 18} 780Z"/>`; }).join('')}
+    </g>
+    <g fill="#3d3150" opacity=".9"><rect x="220" y="800" width="110" height="60" rx="4"/><path d="M210 805 L275 765 L340 805Z"/><rect x="260" y="820" width="24" height="40" fill="#ffcf7a"/></g>
+    <rect y="850" width="1600" height="50" fill="#07060a"/>
+  </svg>`;
+}
+$('#drLo').innerHTML = landscapeSVG('a');
+$('#drHi').innerHTML = landscapeSVG('b');
+
+function citySVG() {
+  return `<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+    <defs><linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050816"/><stop offset="1" stop-color="#1a1440"/></linearGradient></defs>
+    <rect width="1600" height="900" fill="url(#night)"/>
+    <circle cx="1300" cy="160" r="50" fill="#fff6d8"/><circle cx="1300" cy="160" r="90" fill="#fff6d8" opacity=".08"/>
+    ${Array.from({length: 60}, (_, i) => `<circle cx="${(i * 263) % 1600}" cy="${(i * 97) % 400}" r="${i % 3 ? 1.2 : 2}" fill="#fff" opacity=".7"/>`).join('')}
+    ${Array.from({length: 14}, (_, i) => {
+      const x = i * 118 - 20, w = 96 + (i * 31 % 40), h = 260 + (i * 83 % 360);
+      let win = '';
+      for (let r = 0; r < Math.floor(h / 34); r++) for (let c = 0; c < Math.floor(w / 24); c++)
+        if ((r * 7 + c * 13 + i) % 3) win += `<rect x="${x + 10 + c * 22}" y="${900 - h + 14 + r * 32}" width="10" height="16" fill="${(r + c + i) % 5 ? '#ffd27a' : '#7ad7ff'}" opacity="${.4 + ((r * c + i) % 6) / 10}"/>`;
+      return `<rect x="${x}" y="${900 - h}" width="${w}" height="${h}" fill="#0d0d1a"/>${win}`;
+    }).join('')}
+    <rect y="860" width="1600" height="40" fill="#020205"/>
+  </svg>`;
+}
+$('#ibisInner').innerHTML = citySVG();
+
+/* BURST */
+const vf = $('#vfCanvas'), vctx = vf.getContext('2d');
+const strip = $('#strip'), countEl = $('#burstCount'), shotsEl = $('#hudShots'), flash = $('#flash'), shutterBtn = $('#shutter'), preT = $('#preToggle');
+let pre = false, firing = false, burstTimer = null, count = 0, shots = 999, history = [];
+preT.addEventListener('click', () => { pre = !pre; preT.classList.toggle('on', pre); });
+
+function drawSkater(ctx, w, h, t) {
+  // a skateboarder jumping across a sunset, position driven by time
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, '#2a1b5e'); g.addColorStop(.6, '#ff6a6a'); g.addColorStop(1, '#ffc46b');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = 'rgba(255,240,200,.9)'; ctx.beginPath(); ctx.arc(w * .78, h * .62, h * .14, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#140d22'; ctx.fillRect(0, h * .82, w, h * .18);
+  ctx.beginPath(); ctx.moveTo(w * .35, h * .82); ctx.quadraticCurveTo(w * .45, h * .6, w * .55, h * .82); ctx.fill();
+  const cycle = (t % 3000) / 3000;
+  const x = w * (-.1 + cycle * 1.2);
+  const jump = Math.max(0, Math.sin(clamp((cycle - .3) / .4, 0, 1) * Math.PI));
+  const y = h * .8 - jump * h * .4;
+  const s = h / 300, rot = jump * Math.sin(cycle * 20) * .3;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.fillStyle = '#0b0712'; ctx.strokeStyle = '#0b0712'; ctx.lineCap = 'round'; ctx.lineWidth = 9;
+  ctx.fillRect(-36, -4, 72, 7);
+  ctx.beginPath(); ctx.arc(-24, 7, 5, 0, 7); ctx.arc(24, 7, 5, 0, 7); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-14, -6); ctx.lineTo(-6, -40); ctx.lineTo(14, -6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-6, -40); ctx.lineTo(0, -82); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, -72); ctx.lineTo(-30, -60 - jump * 20); ctx.moveTo(0, -72); ctx.lineTo(30, -66 + jump * 10); ctx.stroke();
+  ctx.beginPath(); ctx.arc(2, -96, 12, 0, 7); ctx.fill();
+  ctx.restore();
+}
+
+let vfStart = performance.now();
+function vfLoop(now) {
+  const t = now - vfStart;
+  drawSkater(vctx, vf.width, vf.height, t);
+  history.push(t); if (history.length > 40) history.shift();
+  requestAnimationFrame(vfLoop);
+}
+requestAnimationFrame(vfLoop);
+
+let audio;
+function click() {
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    const len = audio.sampleRate * .02, buf = audio.createBuffer(1, len, audio.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
+    const src = audio.createBufferSource(), gain = audio.createGain();
+    gain.gain.value = .25; src.buffer = buf; src.connect(gain).connect(audio.destination); src.start();
+  } catch (e) {}
+}
+function addFrame(t, isPre) {
+  const f = document.createElement('div');
+  f.className = 'frame' + (isPre ? ' pre' : '');
+  const c = document.createElement('canvas'); c.width = 192; c.height = 112;
+  drawSkater(c.getContext('2d'), 192, 112, t);
+  f.appendChild(c); strip.appendChild(f);
+  while (strip.children.length > 90) strip.firstChild.remove();
+  strip.scrollLeft = strip.scrollWidth;
+  count++; shots = Math.max(0, shots - 1);
+  countEl.textContent = count; shotsEl.textContent = shots;
+}
+function startBurst() {
+  if (firing) return;
+  firing = true; shutterBtn.classList.add('down');
+  if (pre) { const now = performance.now() - vfStart; for (let i = 30; i > 0; i--) addFrame(now - i * 33, true); }
+  const fire = () => {
+    addFrame(performance.now() - vfStart, false); click();
+    flash.style.transition = 'none'; flash.style.opacity = .35;
+    requestAnimationFrame(() => { flash.style.transition = 'opacity .03s'; flash.style.opacity = 0; });
+  };
+  fire(); burstTimer = setInterval(fire, 1000 / 30);
+}
+function stopBurst() { firing = false; shutterBtn.classList.remove('down'); clearInterval(burstTimer); }
+shutterBtn.addEventListener('pointerdown', e => { e.preventDefault(); shutterBtn.setPointerCapture(e.pointerId); startBurst(); });
+['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => shutterBtn.addEventListener(ev, stopBurst));
+addEventListener('keydown', e => {
+  if (e.code !== 'Space') return;
+  const r = $('#burst').getBoundingClientRect();
+  if (r.top < innerHeight && r.bottom > 0) { e.preventDefault(); startBurst(); }
+});
+addEventListener('keyup', e => { if (e.code === 'Space') stopBurst(); });
+
+/* AF tracking */
+const stage = $('#afStage'), subj = $('#subject'), afbox = $('#afbox'), eyebox = $('#eyebox'), afLabel = $('#afLabel');
+const SUBJECTS = {
+  human: { label: 'HUMAN EYE', eye: [.57, .375], box: [1, 1.1], svg: `<svg viewBox="0 0 120 120"><path d="M20 120 Q22 82 60 78 Q98 82 100 120Z" fill="#e8a67a"/><path d="M20 120 Q22 86 60 84 Q98 86 100 120Z" fill="#3a6fd8"/><ellipse cx="60" cy="46" rx="24" ry="28" fill="#f2c09a"/><path d="M36 42 Q38 14 62 16 Q86 18 84 44 Q78 28 60 28 Q44 30 36 42Z" fill="#3a2418"/><circle cx="51" cy="45" r="3" fill="#222"/><circle cx="68" cy="45" r="3" fill="#222"/><path d="M53 60 Q60 65 67 60" stroke="#a5523a" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>` },
+  animal: { label: 'ANIMAL EYE', eye: [.62, .42], box: [1.15, 1], svg: `<svg viewBox="0 0 120 120"><path d="M30 34 L36 8 L52 28Z M90 34 L84 8 L68 28Z" fill="#d98a3a"/><ellipse cx="60" cy="56" rx="34" ry="30" fill="#e89a48"/><path d="M40 92 Q60 70 80 92 L86 120 L34 120Z" fill="#e89a48"/><ellipse cx="60" cy="68" rx="14" ry="10" fill="#fff3e0"/><circle cx="47" cy="52" r="5" fill="#2a5a2a"/><circle cx="73" cy="52" r="5" fill="#2a5a2a"/><circle cx="47" cy="52" r="2" fill="#000"/><circle cx="73" cy="52" r="2" fill="#000"/><path d="M56 64 L64 64 L60 68Z" fill="#c4566a"/></svg>` },
+  bird: { label: 'BIRD EYE', eye: [.66, .38], box: [1.2, .85], svg: `<svg viewBox="0 0 120 120"><path d="M10 70 Q40 40 72 56 L60 74Z" fill="#2f7fd6"/><ellipse cx="62" cy="66" rx="32" ry="18" fill="#3fa3ff"/><circle cx="84" cy="50" r="15" fill="#3fa3ff"/><path d="M97 48 L114 52 L97 56Z" fill="#ffb23f"/><circle cx="88" cy="47" r="3.5" fill="#111"/><circle cx="89" cy="46" r="1" fill="#fff"/><path d="M36 64 Q56 28 80 60 Q60 54 36 64Z" fill="#1f5fae"/><path d="M30 72 L8 66 L14 80Z" fill="#1f5fae"/></svg>` },
+  car: { label: 'VEHICLE', eye: [.78, .56], box: [1.6, .8], svg: `<svg viewBox="0 0 120 120"><path d="M8 78 L16 60 Q22 52 34 50 L50 36 Q56 32 66 32 L84 32 Q94 34 100 48 L110 54 Q116 58 116 66 L116 80Z" fill="#ff4d5e"/><path d="M52 40 L64 40 L64 52 L42 52Z M70 40 L84 40 Q90 42 94 52 L70 52Z" fill="#9fd7ff"/><circle cx="34" cy="82" r="12" fill="#111"/><circle cx="34" cy="82" r="5" fill="#888"/><circle cx="92" cy="82" r="12" fill="#111"/><circle cx="92" cy="82" r="5" fill="#888"/><rect x="104" y="62" width="10" height="6" rx="2" fill="#fff6b0"/></svg>` },
+};
+let mode = 'human', target = null, sx = 0, sy = 0, bx = 0, by = 0, afT = 0, lastInside = 0;
+function setMode(m) {
+  mode = m; subj.innerHTML = SUBJECTS[m].svg; afLabel.textContent = '● TRACKING · ' + SUBJECTS[m].label;
+  $$('#afModes .pill').forEach(p => p.classList.toggle('on', p.dataset.mode === m));
+  eyebox.style.display = m === 'car' ? 'none' : 'block';
+}
+$$('#afModes .pill').forEach(p => p.addEventListener('click', () => setMode(p.dataset.mode)));
+setMode('human');
+stage.addEventListener('pointermove', e => {
+  const r = stage.getBoundingClientRect();
+  target = [e.clientX - r.left, e.clientY - r.top]; lastInside = performance.now();
+});
+stage.addEventListener('pointerleave', () => target = null);
+function afLoop(now) {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  afT += 0.008;
+  let tx, ty;
+  if (target && now - lastInside < 2500) [tx, ty] = target;
+  else { tx = w * (.5 + .34 * Math.sin(afT * 1.3)); ty = h * (.5 + .28 * Math.sin(afT * 2.1 + 1)); }
+  sx = lerp(sx || tx, tx, .12); sy = lerp(sy || ty, ty, .12);
+  const size = clamp(w * .14, 70, 150);
+  subj.style.width = subj.style.height = size + 'px';
+  subj.style.margin = `${-size / 2}px 0 0 ${-size / 2}px`;
+  subj.style.transform = `translate(${sx}px,${sy}px)`; subj.style.left = subj.style.top = '0';
+  bx = lerp(bx || sx, sx, .25); by = lerp(by || sy, sy, .25);
+  const s = SUBJECTS[mode], bw = size * s.box[0], bh = size * s.box[1];
+  afbox.style.width = bw + 'px'; afbox.style.height = bh + 'px';
+  afbox.style.transform = `translate(${bx - bw / 2}px,${by - bh / 2}px)`;
+  const ew = size * .17, eh = size * .13;
+  eyebox.style.width = ew + 'px'; eyebox.style.height = eh + 'px';
+  eyebox.style.transform = `translate(${bx - size / 2 + size * s.eye[0] - ew / 2}px,${by - size / 2 + size * s.eye[1] - eh / 2}px)`;
+  requestAnimationFrame(afLoop);
+}
+requestAnimationFrame(afLoop);
+
+/* DR slider */
+const drStage = $('#drStage'), drLo = $('#drLo'), drHandle = $('#drHandle');
+function setDR(p) { drLo.style.clipPath = `inset(0 ${100 - p}% 0 0)`; drHandle.style.left = p + '%'; }
+setDR(50);
+let drDrag = false;
+const drMove = e => { const r = drStage.getBoundingClientRect(); setDR(clamp((e.clientX - r.left) / r.width * 100, 0, 100)); };
+drStage.addEventListener('pointerdown', e => { drDrag = true; drStage.setPointerCapture(e.pointerId); drMove(e); });
+drStage.addEventListener('pointermove', e => { if (drDrag || e.pointerType === 'mouse') drMove(e); });
+drStage.addEventListener('pointerup', () => drDrag = false);
+
+/* IBIS */
+const ibisInner = $('#ibisInner'), ibisRange = $('#ibisRange'), ibisOut = $('#ibisOut');
+function updIbis() {
+  const v = +ibisRange.value;
+  ibisRange.style.setProperty('--p', (v / 7.5 * 100) + '%');
+  ibisOut.textContent = v === 0 ? 'OFF' : v.toFixed(1) + ' stops';
+}
+ibisRange.addEventListener('input', updIbis); updIbis();
+function ibisLoop(now) {
+  const v = +ibisRange.value, amt = Math.pow(1 - v / 7.5, 1.6);
+  const t = now / 1000;
+  const x = (Math.sin(t * 9.1) + Math.sin(t * 23.7) * .6 + Math.sin(t * 3.3) * .8) * 14 * amt;
+  const y = (Math.cos(t * 7.9) + Math.sin(t * 19.3) * .5 + Math.cos(t * 2.7) * .7) * 11 * amt;
+  const r = Math.sin(t * 5.3) * 1.2 * amt;
+  ibisInner.style.transform = `translate(${x}px,${y}px) rotate(${r}deg)`;
+  ibisInner.style.filter = `blur(${amt * 3}px)`;
+  requestAnimationFrame(ibisLoop);
+}
+requestAnimationFrame(ibisLoop);
+
+/* slow motion */
+const sm = $('#slomoCanvas'), sctx = sm.getContext('2d'), slomoTag = $('#slomoTag');
+let fps = 120;
+$$('#fpsModes .pill').forEach(p => p.addEventListener('click', () => {
+  fps = +p.dataset.fps;
+  $$('#fpsModes .pill').forEach(q => q.classList.toggle('on', q === p));
+  slomoTag.textContent = `${fps}p → 25% speed`;
+}));
+const trail = [];
+function slomoLoop(now) {
+  const W = sm.width, H = sm.height;
+  const sim = now / 1000 * .25;             // quarter-speed playback
+  const q = Math.floor(sim * fps) / fps;    // only frames the camera actually recorded
+  const period = 1.1, ph = (q % period) / period;
+  const x = W * .1 + ((q * .35) % 1) * W * .8;
+  const y = H * .82 - Math.abs(Math.sin(ph * Math.PI)) * H * .62;
+  const squash = 1 - Math.max(0, 1 - Math.abs(Math.sin(ph * Math.PI)) * 6) * .35;
+  if (!trail.length || trail[trail.length - 1][2] !== q) { trail.push([x, y, q]); if (trail.length > 14) trail.shift(); }
+  const g = sctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#0a0a14'); g.addColorStop(1, '#1a0f24');
+  sctx.fillStyle = g; sctx.fillRect(0, 0, W, H);
+  sctx.fillStyle = '#ffffff10'; sctx.fillRect(0, H * .82 + 40, W, 2);
+  trail.forEach(([tx, ty], i) => {
+    if (Math.abs(tx - x) > W * .3) return;
+    sctx.fillStyle = `rgba(255,138,61,${i / trail.length * .25})`;
+    sctx.beginPath(); sctx.arc(tx, ty, 34, 0, 7); sctx.fill();
+  });
+  sctx.fillStyle = 'rgba(0,0,0,.5)';
+  sctx.beginPath(); sctx.ellipse(x, H * .82 + 40, 40 * (1.2 - (H * .82 - y) / H), 8, 0, 0, 7); sctx.fill();
+  sctx.save(); sctx.translate(x, y + 40 * (1 - squash)); sctx.scale(1 / squash, squash);
+  const bg = sctx.createRadialGradient(-12, -12, 4, 0, 0, 40);
+  bg.addColorStop(0, '#ffd0a8'); bg.addColorStop(.5, '#ff6a3d'); bg.addColorStop(1, '#a8203d');
+  sctx.fillStyle = bg; sctx.beginPath(); sctx.arc(0, 0, 40, 0, 7); sctx.fill(); sctx.restore();
+  sctx.fillStyle = '#ffffff99'; sctx.font = '600 22px Inter, sans-serif';
+  sctx.fillText(`frame ${Math.floor(q * fps)}`, W - 170, H - 30);
+  requestAnimationFrame(slomoLoop);
+}
+requestAnimationFrame(slomoLoop);
+
+/* buy */
+const opts = $$('.opt'), totalEl = $('#total'), buyCam = $('#buyCam'), addbag = $('#addbag');
+let shown = 2898;
+opts.forEach(o => o.addEventListener('click', () => {
+  opts.forEach(x => x.classList.toggle('on', x === o));
+  const to = +o.dataset.price, from = shown, t0 = performance.now();
+  buyCam.style.transform = `rotateY(${o.dataset.name === 'Kit' ? 360 : 0}deg)`;
+  const step = now => {
+    const t = clamp((now - t0) / 600, 0, 1);
+    shown = Math.round(lerp(from, to, ease(t)));
+    totalEl.textContent = 'US$' + shown.toLocaleString('en-US');
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+  addbag.classList.remove('done'); addbag.textContent = 'Add to Bag';
+}));
+addbag.addEventListener('click', () => {
+  addbag.classList.add('done');
+  addbag.textContent = '✓ Added. Great choice.';
+  buyCam.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.06) translateY(-10px)' }, { transform: 'scale(1)' }], { duration: 600, easing: 'cubic-bezier(.2,.8,.2,1)' });
+});
+})();
+</script>
+</body>
+</html>
