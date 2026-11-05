@@ -1,0 +1,622 @@
+<title>Claude Wrapped</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=DM+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+/* Layout: one phone-shaped story card centred on a dark stage; each slide is a flat colour field with oversized type, like a year-end recap. Single deliberate dark look. */
+:root{
+  --stage:#0d0a14;
+  --ink:#16101f;
+  --paper:#fbf6ee;
+  --clay:#e2704f;
+  --lilac:#c6b4ff;
+  --cobalt:#2a3be0;
+  --butter:#ffdf6b;
+  --pink:#ffb0cf;
+  --forest:#0f3a2d;
+  --mint:#9ff0c4;
+  --display:"Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --mono:"DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--stage);color:var(--paper);font-family:var(--display);overflow:hidden;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));box-sizing:border-box}
+*{box-sizing:border-box}
+button{font:inherit;cursor:pointer}
+button:focus-visible,label:focus-within{outline:3px solid var(--butter);outline-offset:3px}
+
+.app{height:100%;display:grid;place-items:center;padding-block:16px}
+.card{position:relative;width:100%;max-width:440px;height:100%;max-height:860px;border-radius:22px;overflow:hidden;background:var(--ink);box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+@media (max-width:480px){.app{padding-block:0}.card{border-radius:0;max-height:none}}
+
+/* ---------- Import screen ---------- */
+.import{position:absolute;inset:0;display:flex;flex-direction:column;padding:28px 24px;gap:18px;background:var(--ink);overflow-y:auto}
+.import .logo{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--lilac)}
+.import h1{font-size:clamp(52px,15vw,76px);line-height:.88;font-weight:800;margin:6px 0 0;letter-spacing:-.03em;text-wrap:balance}
+.import h1 span{color:var(--clay)}
+.import p{margin:0;font-size:16px;line-height:1.45;color:#d9cfe6;max-width:34ch}
+.drop{border:2px dashed #4a3d5c;border-radius:16px;padding:22px 18px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;transition:border-color .2s,background .2s}
+.drop.over{border-color:var(--clay);background:#22182e}
+.drop strong{font-size:18px}
+.drop small{font-family:var(--mono);font-size:12px;color:#a596b8}
+.btn{border:0;border-radius:999px;padding:13px 20px;font-weight:600;font-size:15px;background:var(--clay);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--paper);border:1.5px solid #5a4a6e}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px}
+input[type=file]{position:absolute;width:1px;height:1px;opacity:0}
+.steps{font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#b9abcc;margin:0;padding-left:18px}
+.steps b{color:var(--paper);font-weight:500}
+.err{font-family:var(--mono);font-size:13px;color:var(--pink);min-height:1em}
+.years{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border-radius:999px;padding:9px 16px;border:1.5px solid #5a4a6e;background:transparent;color:var(--paper);font-family:var(--mono);font-size:14px}
+.chip[aria-pressed="true"]{background:var(--lilac);color:var(--ink);border-color:var(--lilac)}
+.privacy{font-family:var(--mono);font-size:11.5px;color:#8e80a3;margin-top:auto;line-height:1.5}
+
+/* ---------- Story ---------- */
+.story{position:absolute;inset:0;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.bars{position:absolute;top:0;left:0;right:0;display:flex;gap:4px;padding:12px 12px 0;z-index:5}
+.bar{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.28);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:currentColor}
+.bar.done i{width:100%}
+.bar.on i{animation:fill var(--dur,8s) linear forwards}
+.story.paused .bar.on i{animation-play-state:paused}
+@keyframes fill{to{width:100%}}
+.topline{position:absolute;top:22px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:5;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.topline button{background:none;border:0;color:inherit;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:6px}
+.sample-tag{background:rgba(0,0,0,.25);padding:3px 8px;border-radius:999px}
+
+.slide{position:absolute;inset:0;background:var(--bg);color:var(--fg);display:none;overflow:hidden}
+.slide.on{display:block}
+.story{color:var(--fg-cur,#fff)}
+.content{position:absolute;inset:0;padding:74px 26px 30px;display:flex;flex-direction:column;justify-content:center;gap:14px;z-index:2}
+.content.top{justify-content:flex-start}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin:0;opacity:.85}
+.huge{font-size:clamp(88px,30vw,150px);white-space:nowrap;font-weight:800;line-height:.82;letter-spacing:-.05em;margin:0;font-variant-numeric:tabular-nums}
+.big{font-size:clamp(40px,11vw,56px);font-weight:800;line-height:.95;letter-spacing:-.03em;margin:0;text-wrap:balance}
+.mid{font-size:22px;font-weight:600;line-height:1.2;margin:0;text-wrap:balance}
+.body{font-size:17px;line-height:1.45;margin:0;max-width:32ch}
+.hl{color:var(--ac)}
+.huge.long{font-size:clamp(60px,19vw,96px)}
+.under{background:linear-gradient(transparent 62%, var(--ac) 62%);padding:0 2px}
+
+.rise{animation:rise .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.pop{animation:pop .8s cubic-bezier(.3,1.5,.5,1) both;animation-delay:var(--d,0s)}
+@keyframes pop{from{opacity:0;transform:scale(.6) rotate(-6deg)}to{opacity:1;transform:none}}
+
+.deco{position:absolute;inset:0;z-index:1;pointer-events:none}
+.blob{position:absolute;border-radius:50%;background:var(--ac);animation:drift 9s ease-in-out infinite alternate}
+.ring{position:absolute;border-radius:50%;border:2px solid var(--fg);opacity:.25}
+.sq{position:absolute;background:var(--ac);animation:spin 18s linear infinite}
+@keyframes drift{to{transform:translate(18px,-22px) scale(1.06)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* charts */
+.months{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;align-items:end;height:180px;margin-top:6px}
+.months div{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.months b{display:block;width:100%;background:var(--fg);opacity:.35;border-radius:4px 4px 0 0;transform-origin:bottom;animation:grow .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d)}
+.months b.max{background:var(--ac);opacity:1}
+.months span{font-family:var(--mono);font-size:10px;opacity:.8}
+@keyframes grow{from{transform:scaleY(0)}}
+.clock{display:grid;grid-template-columns:repeat(24,1fr);gap:3px;align-items:end;height:120px}
+.clock b{display:block;background:var(--fg);opacity:.3;border-radius:3px 3px 0 0;transform-origin:bottom;animation:grow .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d)}
+.clock b.max{background:var(--ac);opacity:1}
+.axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;opacity:.75;margin-top:4px}
+.dows{display:flex;flex-direction:column;gap:7px}
+.dow{display:grid;grid-template-columns:38px 1fr 44px;align-items:center;gap:10px;font-family:var(--mono);font-size:12px}
+.dow i{display:block;height:16px;border-radius:999px;background:var(--fg);opacity:.3;transform-origin:left;animation:growx .8s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d)}
+.dow.max i{background:var(--ac);opacity:1}
+.dow span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+@keyframes growx{from{transform:scaleX(0)}}
+
+.rank{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}
+.rank li{display:grid;grid-template-columns:44px 1fr auto;align-items:baseline;gap:8px;min-width:0}
+.rank .n{font-size:30px;font-weight:800;color:var(--ac)}
+.rank .w{font-size:28px;font-weight:800;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:capitalize}
+.rank .c{font-family:var(--mono);font-size:12px;opacity:.75}
+.rank li:first-child .w{font-size:38px}
+
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.fact{background:rgba(0,0,0,.18);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.fact b{font-size:34px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.fact span{font-family:var(--mono);font-size:11.5px;line-height:1.35;opacity:.85}
+
+.persona{font-size:clamp(46px,13vw,64px);font-weight:800;line-height:.9;letter-spacing:-.03em;margin:0}
+.tag{display:inline-block;font-family:var(--mono);font-size:12px;padding:6px 10px;border-radius:999px;border:1.5px solid currentColor;margin:2px 6px 2px 0}
+
+.summary{position:absolute;inset:0;padding:64px 20px 20px;display:flex;flex-direction:column;gap:12px;z-index:2}
+.sum-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.sum-head h2{margin:0;font-size:34px;font-weight:800;line-height:.9;letter-spacing:-.03em}
+.sum-head span{font-family:var(--mono);font-size:12px;opacity:.8;text-align:right}
+.sum-persona{background:var(--ac);color:var(--bg);border-radius:16px;padding:14px 16px}
+.sum-persona small{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.sum-persona div{font-size:30px;font-weight:800;line-height:1;margin-top:4px}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 12px;align-content:start;margin-top:6px}
+.summary .hint{margin-top:auto}
+.sum-grid div{border-top:2px solid var(--fg);padding-top:8px;min-width:0}
+.sum-grid small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.sum-grid b{display:block;font-size:24px;font-weight:800;line-height:1.05;margin-top:4px;overflow-wrap:anywhere}
+.sum-actions{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:6}
+.sum-actions .btn{padding:10px 16px;font-size:14px;background:var(--fg);color:var(--bg)}
+.sum-actions .btn.ghost{background:transparent;color:var(--fg);border-color:var(--fg)}
+.hint{font-family:var(--mono);font-size:11px;opacity:.7}
+
+.taphint{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;z-index:3}
+
+@media (prefers-reduced-motion:reduce){
+  .rise,.pop,.blob,.sq,.months b,.clock b,.dow i{animation:none!important}
+  .bar.on i{animation:none;width:50%}
+}
+</style>
+
+<div class="app">
+  <div class="card" id="card">
+
+    <section class="import" id="import">
+      <div class="logo">Year in review</div>
+      <h1>Claude<br><span>Wrapped</span></h1>
+      <p>Drop in your Claude data export and get your year with Claude, one story at a time.</p>
+
+      <label class="drop" id="drop" for="file">
+        <strong>Choose your export</strong>
+        <small>The .zip from Claude, or conversations.json</small>
+        <input type="file" id="file" accept=".zip,.json,application/json,application/zip">
+      </label>
+
+      <div class="err" id="err" role="alert"></div>
+
+      <div id="yearPick" hidden>
+        <p style="margin-bottom:10px">Pick a year to wrap:</p>
+        <div class="years" id="years"></div>
+        <div class="btn-row" style="margin-top:14px"><button class="btn" id="go">Start my Wrapped</button></div>
+      </div>
+
+      <div class="btn-row" id="sampleRow">
+        <button class="btn ghost" id="sample">Try it with sample data</button>
+      </div>
+
+      <ol class="steps">
+        <li>Open <b>claude.ai</b> and go to <b>Settings &rsaquo; Privacy</b></li>
+        <li>Tap <b>Export data</b> and wait for the email</li>
+        <li>Download the .zip and drop it above</li>
+      </ol>
+
+      <p class="privacy">Everything is read inside your browser. Your conversations are never uploaded anywhere.</p>
+    </section>
+
+    <section class="story" id="story" hidden>
+      <div class="bars" id="bars"></div>
+      <div class="topline" id="topline">
+        <span id="toplabel">Claude Wrapped</span>
+        <span style="display:flex;gap:6px;align-items:center">
+          <span class="sample-tag" id="sampleTag" hidden>Sample data</span>
+          <button id="pause" aria-label="Pause">Pause</button>
+          <button id="close" aria-label="Close">Close</button>
+        </span>
+      </div>
+      <div id="slides"></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const fmt = n => Math.round(n).toLocaleString();
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const MONTHS_FULL = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let conversations = null, isSample = false, chosenYear = null;
+
+  /* ---------------- Import ---------------- */
+  const fileInput = $("#file"), drop = $("#drop"), err = $("#err");
+  fileInput.addEventListener("change", e => e.target.files[0] && handleFile(e.target.files[0]));
+  ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", e => e.dataTransfer.files[0] && handleFile(e.dataTransfer.files[0]));
+
+  async function handleFile(file) {
+    err.textContent = "Reading " + file.name + "…";
+    try {
+      let text;
+      if (/\.zip$/i.test(file.name) || file.type.includes("zip")) {
+        if (!window.JSZip) throw new Error("The zip reader didn't load. Unzip the export and choose conversations.json instead.");
+        const zip = await JSZip.loadAsync(file);
+        const entry = Object.values(zip.files).find(f => /(^|\/)conversations\.json$/i.test(f.name));
+        if (!entry) throw new Error("No conversations.json inside that zip. Make sure it's the Claude data export.");
+        text = await entry.async("string");
+      } else {
+        text = await file.text();
+      }
+      let data = JSON.parse(text);
+      if (!Array.isArray(data)) data = data.conversations || data.chats || [];
+      if (!data.length) throw new Error("That file has no conversations in it.");
+      conversations = data; isSample = false;
+      err.textContent = `Found ${fmt(data.length)} conversations.`;
+      showYears();
+    } catch (e) {
+      err.textContent = e instanceof SyntaxError ? "That file isn't valid JSON. Choose conversations.json from the export." : e.message;
+    }
+  }
+
+  function showYears() {
+    const ys = new Set();
+    conversations.forEach(c => { const d = new Date(c.created_at || c.updated_at); if (!isNaN(d)) ys.add(d.getFullYear()); });
+    const years = [...ys].sort((a,b) => b - a);
+    chosenYear = years[0] ?? "all";
+    const box = $("#years"); box.innerHTML = "";
+    [...years, "all"].forEach(y => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.textContent = y === "all" ? "All time" : y;
+      b.setAttribute("aria-pressed", y === chosenYear);
+      b.onclick = () => { chosenYear = y; box.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === b)); };
+      box.appendChild(b);
+    });
+    $("#yearPick").hidden = false;
+    $("#sampleRow").hidden = true;
+  }
+  $("#go").onclick = () => start();
+  $("#sample").onclick = () => { conversations = makeSample(); isSample = true; chosenYear = 2026; start(); };
+
+  /* ---------------- Analysis ---------------- */
+  function msgText(m) {
+    if (Array.isArray(m.content) && m.content.length) {
+      const t = m.content.filter(x => x && x.type === "text" && x.text).map(x => x.text).join("\n");
+      if (t) return t;
+    }
+    return m.text || "";
+  }
+  const words = s => (s.match(/\S+/g) || []).length;
+  const dayKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+  const STOP = new Set(("a an the and or but of to in on for with at by from about as into is are was were be been it its this that these those my your our me you i we how what why when where which who help helping need want can could would should do does make making using use get new chat untitled conversation question questions quick simple vs via some any more best between over up out not no yes write writing explain explained understanding understand").split(" "));
+
+  function analyze(convs, year) {
+    const inYear = d => year === "all" || d.getFullYear() === year;
+    const list = convs.filter(c => { const d = new Date(c.created_at || c.updated_at); return !isNaN(d) && inYear(d); });
+
+    const byMonth = Array(12).fill(0), byHour = Array(24).fill(0), byDow = Array(7).fill(0);
+    const days = new Map(), topicCount = new Map();
+    let nMsg = 0, nYou = 0, nClaude = 0, wYou = 0, wClaude = 0, polite = 0, questions = 0, code = 0, sorry = 0;
+    let longest = null, first = null;
+
+    for (const c of list) {
+      const cd = new Date(c.created_at || c.updated_at);
+      if (!first || cd < first.d) first = { d: cd, name: c.name };
+      const msgs = c.chat_messages || c.messages || [];
+      if (!longest || msgs.length > longest.n) longest = { n: msgs.length, name: c.name, d: cd };
+
+      const title = (c.name || "").trim();
+      const topicSrc = title || msgText(msgs.find(m => m.sender === "human") || {}).slice(0, 120);
+      const seen = new Set();
+      (topicSrc.toLowerCase().match(/[a-z][a-z'+#-]{2,}/g) || []).forEach(w => {
+        w = w.replace(/'s$/, "");
+        if (STOP.has(w) || seen.has(w)) return; seen.add(w);
+        topicCount.set(w, (topicCount.get(w) || 0) + 1);
+      });
+
+      for (const m of msgs) {
+        nMsg++;
+        const t = msgText(m), d = new Date(m.created_at || c.created_at);
+        if (m.sender === "human") {
+          nYou++; wYou += words(t);
+          polite += (t.match(/\b(please|pls|plz|thank you|thanks|thx|ty|cheers)\b/gi) || []).length;
+          sorry += (t.match(/\bsorry\b/gi) || []).length;
+          if (t.includes("?")) questions++;
+          if (!isNaN(d)) {
+            byMonth[d.getMonth()]++; byHour[d.getHours()]++; byDow[d.getDay()]++;
+            const k = dayKey(d); days.set(k, (days.get(k) || 0) + 1);
+          }
+        } else {
+          nClaude++; wClaude += words(t);
+          code += Math.floor((t.match(/```/g) || []).length / 2);
+        }
+      }
+    }
+
+    // streak
+    const keys = [...days.keys()].sort();
+    let best = 0, run = 0, prev = null, bestEnd = null;
+    for (const k of keys) {
+      const d = new Date(k + "T12:00:00");
+      run = prev && (d - prev) / 864e5 < 1.5 ? run + 1 : 1;
+      if (run > best) { best = run; bestEnd = d; }
+      prev = d;
+    }
+    let bigDay = null;
+    days.forEach((v, k) => { if (!bigDay || v > bigDay.n) bigDay = { n: v, d: new Date(k + "T12:00:00") }; });
+
+    const peakMonth = byMonth.indexOf(Math.max(...byMonth));
+    const peakHour = byHour.indexOf(Math.max(...byHour));
+    const peakDow = byDow.indexOf(Math.max(...byDow));
+    const topics = [...topicCount.entries()].sort((a,b) => b[1] - a[1]).slice(0, 5);
+    const nightShare = nYou ? (byHour.slice(22).concat(byHour.slice(0,5)).reduce((a,b)=>a+b,0)) / nYou : 0;
+
+    const s = { year, nConv: list.length, nMsg, nYou, nClaude, wYou, wClaude, polite, sorry, questions, code,
+      byMonth, byHour, byDow, peakMonth, peakHour, peakDow, topics, longest, first, streak: best, streakEnd: bestEnd,
+      bigDay, activeDays: days.size, nightShare,
+      avgLen: list.length ? nMsg / list.length : 0, avgWords: nYou ? wYou / nYou : 0 };
+    s.persona = pickPersona(s);
+    return s;
+  }
+
+  const PERSONAS = {
+    builder:  { name: "The Builder",      color: "cobalt", line: "You came to Claude with things to make. Code blocks, fixes, and one more feature before bed.", tags: ["ships it", "debugs at 1am", "loves a code block"] },
+    night:    { name: "The Night Shift",  color: "lilac",  line: "Your best thinking happens after dark. While everyone slept, you and Claude were deep in it.", tags: ["after hours", "one more question", "moonlit"] },
+    curious:  { name: "The Curious Mind", color: "butter", line: "Why? How? What if? You asked more questions than most people ask all year.", tags: ["asks why", "rabbit holes", "always learning"] },
+    marathon: { name: "The Marathoner",   color: "mint",   line: "You don't do quick chats. You settle in and go the distance on a single thread.", tags: ["long threads", "deep dives", "stays the course"] },
+    wordsmith:{ name: "The Wordsmith",    color: "pink",   line: "You write long, considered messages. Drafts, essays and ideas, all laid out in full.", tags: ["paragraph energy", "drafts & edits", "says it fully"] },
+    polite:   { name: "The Diplomat",     color: "clay",   line: "Please. Thank you. Cheers. You kept your manners with Claude all year long.", tags: ["says please", "says thanks", "good vibes"] },
+  };
+  function pickPersona(s) {
+    const score = {
+      builder: s.nClaude ? (s.code / s.nClaude) / 0.25 : 0,
+      night: s.nightShare / 0.18,
+      curious: s.nYou ? (s.questions / s.nYou) / 0.55 : 0,
+      marathon: s.avgLen / 14,
+      wordsmith: s.avgWords / 55,
+      polite: s.nYou ? (s.polite / s.nYou) / 0.2 : 0,
+    };
+    return Object.entries(score).sort((a,b) => b[1] - a[1])[0][0];
+  }
+
+  /* ---------------- Slides ---------------- */
+  const C = n => `var(--${n})`;
+  const hourLabel = h => h === 0 ? "12am" : h < 12 ? h + "am" : h === 12 ? "12pm" : (h - 12) + "pm";
+  const dateLabel = d => d ? d.toLocaleDateString(undefined, { day: "numeric", month: "long" }) : "";
+  function timeType(h) {
+    if (h < 5) return ["Night Owl", "Most people were asleep. You were not."];
+    if (h < 9) return ["Early Bird", "Up before the world, getting a head start with Claude."];
+    if (h < 12) return ["Morning Mover", "Mornings were when you got things done."];
+    if (h < 17) return ["Afternoon Thinker", "Afternoons were your prime time for big questions."];
+    if (h < 21) return ["Evening Regular", "After the day wound down, you and Claude got going."];
+    return ["Late Shift", "Late nights were when the good ideas showed up."];
+  }
+  const count = (n, d = 0) => `<span class="count" data-to="${Math.round(n)}" style="--d:${d}s">${fmt(n)}</span>`;
+
+  function buildSlides(s) {
+    const yr = s.year === "all" ? "all time" : s.year;
+    const yrTitle = s.year === "all" ? "All time" : s.year;
+    const P = PERSONAS[s.persona];
+    const out = [];
+
+    out.push({ bg: C("clay"), fg: C("ink"), ac: C("paper"), html: `
+      <div class="deco"><div class="blob" style="width:340px;height:340px;right:-120px;top:-80px;opacity:.35"></div>
+      <div class="ring" style="width:420px;height:420px;left:-160px;bottom:-160px"></div><div class="ring" style="width:300px;height:300px;left:-100px;bottom:-100px"></div></div>
+      <div class="content">
+        <p class="kicker rise">Claude Wrapped</p>
+        <h1 class="huge rise" style="--d:.15s">${esc(yrTitle)}</h1>
+        <p class="mid rise" style="--d:.35s">You and Claude had quite a ${s.year === "all" ? "run" : "year"}. Let's look back.</p>
+      </div><div class="taphint">Tap to continue</div>` });
+
+    out.push({ bg: C("ink"), fg: C("paper"), ac: C("lilac"), html: `
+      <div class="deco"><div class="sq" style="width:160px;height:160px;right:-40px;bottom:60px;opacity:.9;border-radius:30px"></div></div>
+      <div class="content">
+        <p class="kicker rise">This ${s.year === "all" ? "whole time" : "year"} you started</p>
+        <p class="huge hl rise${s.nConv >= 10000 ? " long" : ""}" style="--d:.1s">${count(s.nConv)}</p>
+        <p class="big rise" style="--d:.25s">conversations</p>
+        <p class="body rise" style="--d:.45s">That's ${fmt(s.nMsg)} messages back and forth, across ${fmt(s.activeDays)} different days.</p>
+      </div>` });
+
+    const novels = (s.wYou + s.wClaude) / 90000;
+    out.push({ bg: C("butter"), fg: C("ink"), ac: C("clay"), html: `
+      <div class="deco"><div class="blob" style="width:220px;height:220px;left:-70px;top:90px;opacity:.85"></div></div>
+      <div class="content">
+        <p class="kicker rise">You typed</p>
+        <p class="huge rise${s.wYou >= 10000 ? " long" : ""}" style="--d:.1s">${count(s.wYou)}</p>
+        <p class="big rise" style="--d:.2s">words</p>
+        <p class="mid rise" style="--d:.4s">Claude wrote <span class="under">${fmt(s.wClaude)}</span> back.</p>
+        <p class="body rise" style="--d:.55s">${novels >= 1 ? `Together that's about ${novels.toFixed(1)} novels' worth of words.` : `Together that's ${Math.max(1, Math.round((s.wYou + s.wClaude) / 250))} pages of text.`}</p>
+      </div>` });
+
+    const mMax = Math.max(1, ...s.byMonth);
+    out.push({ bg: C("cobalt"), fg: C("paper"), ac: C("pink"), html: `
+      <div class="content">
+        <p class="kicker rise">Your biggest month</p>
+        <p class="big rise hl" style="--d:.1s;font-size:clamp(52px,15vw,74px)">${MONTHS_FULL[s.peakMonth]}</p>
+        <p class="body rise" style="--d:.25s">${fmt(s.byMonth[s.peakMonth])} messages from you. Something was clearly going on.</p>
+        <div class="months">${s.byMonth.map((v,i) => `<div><b class="${i===s.peakMonth?"max":""}" style="height:${Math.max(3, v/mMax*100)}%;--d:${.3+i*.05}s"></b><span>${MONTHS[i][0]}</span></div>`).join("")}</div>
+      </div>` });
+
+    const [tt, tl] = timeType(s.peakHour);
+    const hMax = Math.max(1, ...s.byHour);
+    out.push({ bg: C("forest"), fg: C("paper"), ac: C("mint"), html: `
+      <div class="deco"><div class="blob" style="width:200px;height:200px;right:-50px;top:70px;opacity:.9"></div></div>
+      <div class="content">
+        <p class="kicker rise">Your clock says</p>
+        <p class="big rise" style="--d:.1s">You're an <span class="hl">${tt}</span></p>
+        <p class="body rise" style="--d:.25s">${tl} Your peak hour was <b>${hourLabel(s.peakHour)}</b>.</p>
+        <div class="rise" style="--d:.35s"><div class="clock">${s.byHour.map((v,i) => `<b class="${i===s.peakHour?"max":""}" style="height:${Math.max(3, v/hMax*100)}%;--d:${.4+i*.025}s"></b>`).join("")}</div>
+        <div class="axis"><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>11pm</span></div></div>
+      </div>` });
+
+    const dMax = Math.max(1, ...s.byDow);
+    const order = [1,2,3,4,5,6,0];
+    out.push({ bg: C("pink"), fg: C("ink"), ac: C("cobalt"), html: `
+      <div class="content">
+        <p class="kicker rise">Your go-to day</p>
+        <p class="big rise" style="--d:.1s;font-size:clamp(52px,15vw,74px)">${DAYS[s.peakDow]}s</p>
+        <div class="dows rise" style="--d:.25s">${order.map((i,j) => `<div class="dow ${i===s.peakDow?"max":""}"><span>${DAYS[i].slice(0,3)}</span><i style="width:${Math.max(4, s.byDow[i]/dMax*100)}%;--d:${.35+j*.06}s"></i><span>${fmt(s.byDow[i])}</span></div>`).join("")}</div>
+        ${s.bigDay ? `<p class="body rise" style="--d:.8s">Your single busiest day was <b>${dateLabel(s.bigDay.d)}</b>, with ${fmt(s.bigDay.n)} messages.</p>` : ""}
+      </div>` });
+
+    out.push({ bg: C("lilac"), fg: C("ink"), ac: C("clay"), html: `
+      <div class="deco"><div class="ring" style="width:260px;height:260px;right:-60px;top:80px;opacity:.4"></div><div class="ring" style="width:180px;height:180px;right:-20px;top:120px;opacity:.4"></div></div>
+      <div class="content">
+        <p class="kicker rise">Longest streak</p>
+        <p class="huge rise" style="--d:.1s">${count(s.streak)}</p>
+        <p class="big rise" style="--d:.2s">day${s.streak === 1 ? "" : "s"} in a row</p>
+        <p class="body rise" style="--d:.4s">${s.streakEnd ? `It ran until ${dateLabel(s.streakEnd)}. ` : ""}Consistency like that adds up.</p>
+      </div>` });
+
+    if (s.longest) out.push({ bg: C("ink"), fg: C("paper"), ac: C("butter"), html: `
+      <div class="deco"><div class="blob" style="width:280px;height:280px;left:-120px;bottom:-60px;opacity:.9"></div></div>
+      <div class="content top" style="padding-top:110px">
+        <p class="kicker rise">Your epic</p>
+        <p class="body rise" style="--d:.1s">Your longest conversation went for</p>
+        <p class="huge hl rise" style="--d:.2s">${count(s.longest.n)}</p>
+        <p class="mid rise" style="--d:.3s">messages</p>
+        <p class="big rise" style="--d:.5s;font-size:clamp(28px,8vw,38px)">&ldquo;${esc(s.longest.name || "Untitled chat")}&rdquo;</p>
+        <p class="kicker rise" style="--d:.6s">${dateLabel(s.longest.d)}</p>
+      </div>` });
+
+    if (s.topics.length) out.push({ bg: C("clay"), fg: C("ink"), ac: C("paper"), html: `
+      <div class="content">
+        <p class="kicker rise">Your top topics</p>
+        <p class="mid rise" style="--d:.1s">What kept coming up in your chats</p>
+        <ol class="rank">${s.topics.map(([w,n],i) => `<li class="rise" style="--d:${.25+i*.12}s"><span class="n">${i+1}</span><span class="w">${esc(w)}</span><span class="c">${n} chats</span></li>`).join("")}</ol>
+      </div>` });
+
+    out.push({ bg: C("mint"), fg: C("ink"), ac: C("forest"), html: `
+      <div class="content">
+        <p class="kicker rise">Little habits</p>
+        <p class="big rise" style="--d:.1s">The way you talk to Claude</p>
+        <div class="facts">
+          <div class="fact pop" style="--d:.25s"><b>${fmt(s.questions)}</b><span>messages with a question in them</span></div>
+          <div class="fact pop" style="--d:.35s"><b>${fmt(s.polite)}</b><span>pleases and thank yous</span></div>
+          <div class="fact pop" style="--d:.45s"><b>${fmt(s.code)}</b><span>code blocks Claude wrote you</span></div>
+          <div class="fact pop" style="--d:.55s"><b>${fmt(s.avgWords)}</b><span>words in your average message</span></div>
+        </div>
+        ${s.sorry ? `<p class="body rise" style="--d:.7s">You also said sorry ${fmt(s.sorry)} time${s.sorry===1?"":"s"}. Claude forgives you.</p>` : ""}
+      </div>` });
+
+    out.push({ bg: C(P.color), fg: C(P.color === "cobalt" || P.color === "forest" ? "paper" : "ink"), ac: C(P.color === "cobalt" ? "butter" : "paper"), html: `
+      <div class="deco"><div class="sq" style="width:220px;height:220px;left:-70px;top:-70px;opacity:.5;border-radius:40px"></div><div class="ring" style="width:380px;height:380px;right:-170px;bottom:-140px"></div></div>
+      <div class="content">
+        <p class="kicker rise">Your Claude personality</p>
+        <h2 class="persona pop" style="--d:.2s">${P.name}</h2>
+        <p class="body rise" style="--d:.5s">${P.line}</p>
+        <div class="rise" style="--d:.7s">${P.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
+      </div>` });
+
+    const topTopic = s.topics[0] ? s.topics[0][0] : "everything";
+    out.push({ bg: C("ink"), fg: C("paper"), ac: C(P.color === "cobalt" ? "lilac" : P.color), summary: true, html: `
+      <div class="summary">
+        <div class="sum-head rise"><h2>Claude<br>Wrapped</h2><span>${esc(yrTitle)}${isSample ? "<br>sample data" : ""}</span></div>
+        <div class="sum-persona pop" style="--d:.15s"><small>Personality</small><div>${P.name}</div></div>
+        <div class="sum-grid rise" style="--d:.3s">
+          <div><small>Conversations</small><b>${fmt(s.nConv)}</b></div>
+          <div><small>Words you typed</small><b>${fmt(s.wYou)}</b></div>
+          <div><small>Top month</small><b>${MONTHS_FULL[s.peakMonth]}</b></div>
+          <div><small>Peak hour</small><b>${hourLabel(s.peakHour)}</b></div>
+          <div><small>Top topic</small><b style="text-transform:capitalize">${esc(topTopic)}</b></div>
+          <div><small>Best streak</small><b>${fmt(s.streak)} days</b></div>
+        </div>
+        <p class="hint">Screenshot this card to share it.</p>
+        <div class="sum-actions"><button class="btn" data-act="replay">Watch again</button><button class="btn ghost" data-act="new">Use another file</button></div>
+      </div>` });
+
+    return out;
+  }
+
+  /* ---------------- Player ---------------- */
+  const story = $("#story"), slidesEl = $("#slides"), barsEl = $("#bars");
+  let slides = [], idx = 0, paused = false;
+  const DUR = 7;
+
+  function start() {
+    const s = analyze(conversations, chosenYear);
+    if (!s.nConv) { err.textContent = "No conversations found for that year. Try another."; return; }
+    slides = buildSlides(s);
+    slidesEl.innerHTML = slides.map((sl, i) => `<section class="slide" style="--bg:${sl.bg};--fg:${sl.fg};--ac:${sl.ac}" aria-label="Slide ${i+1} of ${slides.length}">${sl.html}</section>`).join("");
+    barsEl.innerHTML = slides.map(() => `<div class="bar"><i></i></div>`).join("");
+    $("#sampleTag").hidden = !isSample;
+    $("#import").hidden = true; story.hidden = false;
+    paused = false; story.classList.remove("paused"); $("#pause").textContent = "Pause";
+    go(0);
+  }
+
+  function go(n) {
+    idx = Math.max(0, Math.min(slides.length - 1, n));
+    const els = slidesEl.children;
+    [...els].forEach((el, i) => {
+      el.classList.toggle("on", i === idx);
+      if (i === idx) { const clone = el.cloneNode(true); el.replaceWith(clone); }
+    });
+    const cur = slidesEl.children[idx];
+    story.style.setProperty("--fg-cur", slides[idx].fg);
+    [...barsEl.children].forEach((b, i) => {
+      b.className = "bar" + (i < idx ? " done" : "");
+      const fresh = b.firstElementChild.cloneNode(); b.firstElementChild.replaceWith(fresh);
+      if (i === idx) { if (slides[idx].summary) b.classList.add("done"); else { b.style.setProperty("--dur", DUR + "s"); b.classList.add("on"); fresh.addEventListener("animationend", () => go(idx + 1), { once: true }); } }
+    });
+    animateCounts(cur);
+  }
+
+  function animateCounts(root) {
+    root.querySelectorAll(".count").forEach(el => {
+      const to = +el.dataset.to; if (reduce || to < 2) return;
+      const delay = parseFloat(el.style.getPropertyValue("--d")) * 1000 || 0, dur = 1100;
+      el.textContent = "0";
+      setTimeout(() => {
+        const t0 = performance.now();
+        const step = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(to * e); if (p < 1) requestAnimationFrame(step); };
+        requestAnimationFrame(step);
+      }, delay + 150);
+    });
+  }
+
+  function setPaused(p) { paused = p; story.classList.toggle("paused", p); $("#pause").textContent = p ? "Play" : "Pause"; }
+
+  let downAt = 0, holdTimer = null, held = false;
+  story.addEventListener("pointerdown", e => {
+    if (e.target.closest("button")) return;
+    downAt = Date.now(); held = false;
+    holdTimer = setTimeout(() => { held = true; story.classList.add("paused"); }, 220);
+  });
+  story.addEventListener("pointerup", e => {
+    clearTimeout(holdTimer);
+    if (e.target.closest("button")) return;
+    if (held) { if (!paused) story.classList.remove("paused"); return; }
+    const r = story.getBoundingClientRect();
+    if (e.clientX - r.left < r.width * 0.3) go(idx - 1); else go(idx + 1);
+  });
+  story.addEventListener("pointercancel", () => { clearTimeout(holdTimer); if (!paused) story.classList.remove("paused"); });
+
+  story.addEventListener("click", e => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    if (b.dataset.act === "replay") go(0);
+    if (b.dataset.act === "new") closeStory();
+  });
+  $("#pause").onclick = () => setPaused(!paused);
+  $("#close").onclick = () => closeStory();
+  function closeStory() { story.hidden = true; $("#import").hidden = false; slidesEl.innerHTML = ""; }
+
+  document.addEventListener("keydown", e => {
+    if (story.hidden) return;
+    if (e.key === "ArrowRight") go(idx + 1);
+    else if (e.key === "ArrowLeft") go(idx - 1);
+    else if (e.key === " ") { e.preventDefault(); setPaused(!paused); }
+    else if (e.key === "Escape") closeStory();
+  });
+
+  /* ---------------- Sample data ---------------- */
+  function makeSample() {
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const pick = a => a[Math.floor(rnd() * a.length)];
+    const titles = ["Essay intro on The Great Gatsby","TEEL paragraph feedback","Physics revision kinematics","Fix my Python loop","Persuasive speech on climate","Chemistry stoichiometry help","Essay conclusion rewrite","Spotify playlist ideas","Biology cell structure notes","Short story opening","Maths quadratics practice","Film analysis techniques","Python game bug","Essay thesis for Macbeth","Physics exam practice","Gym program for summer","Narrative composition ideas","Website layout in HTML","Poetry analysis techniques","Biology exam revision"];
+    const asks = ["Can you help me with this? ","Please check my paragraph. ","Why does this happen? ","Thanks! Can you make it shorter? ","What's a better word for this? ","How do I fix this error? "];
+    const convs = [];
+    for (let i = 0; i < 260; i++) {
+      const month = Math.min(10, Math.floor(Math.pow(rnd(), .8) * 11));
+      const boost = rnd() < .3 ? 8 : month; // exam season bump in September
+      const d = new Date(2026, boost, 1 + Math.floor(rnd() * 28), rnd() < .35 ? 21 + Math.floor(rnd() * 3) : 8 + Math.floor(rnd() * 12), Math.floor(rnd() * 60));
+      const n = 2 + Math.floor(Math.pow(rnd(), 2.2) * 40);
+      const msgs = [];
+      for (let j = 0; j < n; j++) {
+        const t = new Date(d.getTime() + j * 90000);
+        const human = j % 2 === 0;
+        msgs.push({ sender: human ? "human" : "assistant", created_at: t.toISOString(),
+          text: human ? pick(asks) + "word ".repeat(10 + Math.floor(rnd() * 50)) : "Sure. " + "word ".repeat(80 + Math.floor(rnd() * 250)) + (rnd() < .2 ? "\n```\ncode\n```" : "") });
+      }
+      convs.push({ uuid: "s" + i, name: pick(titles), created_at: d.toISOString(), chat_messages: msgs });
+    }
+    return convs;
+  }
+})();
+</script>
