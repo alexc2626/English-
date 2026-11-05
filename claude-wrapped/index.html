@@ -160,8 +160,8 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0}
 
       <label class="drop" id="drop" for="file">
         <strong>Choose your export</strong>
-        <small>The .zip from Claude, or conversations.json</small>
-        <input type="file" id="file" accept=".zip,.json,application/json,application/zip">
+        <small>conversations-000.zip from your export (you can pick several files)</small>
+        <input type="file" id="file" multiple accept=".zip,.json,.jsonl,application/json,application/zip">
       </label>
 
       <div class="err" id="err" role="alert"></div>
@@ -179,7 +179,7 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0}
       <ol class="steps">
         <li>Open <b>claude.ai</b> and go to <b>Settings &rsaquo; Privacy</b></li>
         <li>Tap <b>Export data</b> and wait for the email</li>
-        <li>Download the .zip and drop it above</li>
+        <li>Download <b>conversations-000.zip</b> and drop it above</li>
       </ol>
 
       <p class="privacy">Everything is read inside your browser. Your conversations are never uploaded anywhere.</p>
@@ -215,32 +215,46 @@ input[type=file]{position:absolute;width:1px;height:1px;opacity:0}
 
   /* ---------------- Import ---------------- */
   const fileInput = $("#file"), drop = $("#drop"), err = $("#err");
-  fileInput.addEventListener("change", e => e.target.files[0] && handleFile(e.target.files[0]));
+  fileInput.addEventListener("change", e => e.target.files.length && handleFiles(e.target.files));
   ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
   ["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
-  drop.addEventListener("drop", e => e.dataTransfer.files[0] && handleFile(e.dataTransfer.files[0]));
+  drop.addEventListener("drop", e => e.dataTransfer.files.length && handleFiles(e.dataTransfer.files));
 
-  async function handleFile(file) {
-    err.textContent = "Reading " + file.name + "…";
+  async function handleFiles(files) {
+    files = [...files];
+    err.textContent = "Reading " + files.map(f => f.name).join(", ") + "…";
     try {
-      let text;
-      if (/\.zip$/i.test(file.name) || file.type.includes("zip")) {
-        if (!window.JSZip) throw new Error("The zip reader didn't load. Unzip the export and choose conversations.json instead.");
-        const zip = await JSZip.loadAsync(file);
-        const entry = Object.values(zip.files).find(f => /(^|\/)conversations\.json$/i.test(f.name));
-        if (!entry) throw new Error("No conversations.json inside that zip. Make sure it's the Claude data export.");
-        text = await entry.async("string");
-      } else {
-        text = await file.text();
+      const texts = [];
+      for (const file of files) {
+        if (/\.zip$/i.test(file.name) || file.type.includes("zip")) {
+          if (!window.JSZip) throw new Error("The zip reader didn't load. Unzip the export and choose the .json files inside instead.");
+          const zip = await JSZip.loadAsync(file);
+          const jsons = Object.values(zip.files).filter(f => !f.dir && /\.jsonl?$/i.test(f.name));
+          const conv = jsons.filter(f => /conversation/i.test(f.name));
+          for (const f of (conv.length ? conv : jsons)) texts.push(await f.async("string"));
+        } else texts.push(await file.text());
       }
-      let data = JSON.parse(text);
-      if (!Array.isArray(data)) data = data.conversations || data.chats || [];
-      if (!data.length) throw new Error("That file has no conversations in it.");
-      conversations = data; isSample = false;
-      err.textContent = `Found ${fmt(data.length)} conversations.`;
+      const data = [];
+      const take = v => {
+        if (Array.isArray(v)) v.forEach(take);
+        else if (v && typeof v === "object") {
+          if (Array.isArray(v.chat_messages) || Array.isArray(v.messages)) data.push(v);
+          else if (Array.isArray(v.conversations)) take(v.conversations);
+          else if (Array.isArray(v.chats)) take(v.chats);
+        }
+      };
+      for (const t of texts) {
+        try { take(JSON.parse(t)); }
+        catch { t.split("\n").forEach(line => { line = line.trim(); if (line) try { take(JSON.parse(line)); } catch {} }); }
+      }
+      if (!data.length) throw new Error("No conversations found. Choose conversations-000.zip (or conversations.json) from your Claude export.");
+      const seen = new Set();
+      conversations = data.filter(c => { const k = c.uuid || c.id; if (!k) return true; if (seen.has(k)) return false; seen.add(k); return true; });
+      isSample = false;
+      err.textContent = `Found ${fmt(conversations.length)} conversations.`;
       showYears();
     } catch (e) {
-      err.textContent = e instanceof SyntaxError ? "That file isn't valid JSON. Choose conversations.json from the export." : e.message;
+      err.textContent = e.message;
     }
   }
 
